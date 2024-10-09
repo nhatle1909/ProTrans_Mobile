@@ -1,9 +1,10 @@
-import { View , StyleSheet, Alert,Image} from "react-native";
-import { Form, WhiteSpace,Button,Text,Input,WingBlank } from "@ant-design/react-native";
+import { View , StyleSheet, Alert,Image,TouchableOpacity} from "react-native";
+import { Form, WhiteSpace,Button,Text,Input} from "@ant-design/react-native";
 import { useState } from "react";
 import { Asset} from "expo-asset";
 import { LinearGradient } from "expo-linear-gradient";
-import { TouchableOpacity } from "react-native";
+import { LoginAPI } from "@/Utils/LoginAPI/LoginAPI";
+
 export default function LoginScreen() {
   let [Email,SetEmail] = useState('');
   let [Password,SetPassword] = useState('');
@@ -12,20 +13,18 @@ export default function LoginScreen() {
     const re = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
     return re.test(email);
   };
-
   const HandleLogin = async () => {
     if (validateEmail(Email)) {
-      Alert.alert('Login Successful', `Email: ${Email}\nPassword: ${Password}`);
     } else {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
     }
-    console.log(Email + ' -- ' + Password)
+    await LoginAPI(Email,Password);
   }
+
   const logo = Asset.fromModule(require('../assets/images/ProTranslogo_standard.png')).uri;
+ 
   return (
-<LinearGradient colors={['#87CEEB', '#1E90FF']} style={style.container}>
-    
-      
+  <LinearGradient colors={['#87CEEB', '#1E90FF']} style={style.container}>
       <Form style={style.form}>
         <View>
           <Image source={{uri : logo}} style={style.image} resizeMode="contain"/>
