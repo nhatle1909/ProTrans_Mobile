@@ -19,3 +19,12 @@ export const GetToken = async () => {
         console.error('Error retrieving JWT', error);
       }
 }
+export const RemoveToken = async() => {
+        const token = await SecureStore.getItemAsync('jwt');
+        if (token){
+            await SecureStore.deleteItemAsync('jwt');
+        }
+        else {
+            console.error("No JWT Token");
+        }
+}

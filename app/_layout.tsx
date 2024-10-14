@@ -1,15 +1,12 @@
 
-import {createNativeStackNavigator} from "@react-navigation/native-stack"
-
-
-import LoginScreen from "./LoginScreen";
-const Stack=createNativeStackNavigator();
-export default function RootLayout() {
+import { GetToken } from "@/Utils/TokenUtil";
+import { Stack } from "expo-router";
+export function BottomTabLayout(){
   return (
-
-    <Stack.Navigator >
-        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown : false}}/>
-       
-    </Stack.Navigator>
+    
+    <Stack initialRouteName="index" >
+        <Stack.Screen name="index"  options={{headerShown : false}}/>
+        <Stack.Screen name="(tabs)" options={{headerShown : false}}/>
+    </Stack>
       );
 }
