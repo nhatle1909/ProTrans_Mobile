@@ -11,22 +11,19 @@ export default function Index() {
 
   let [Email,SetEmail] = useState('');
   let [Password,SetPassword] = useState('');
-  
+
   const HandleLogin = async () => {
   
-    if (!validateEmail(Email)) {
+  if (!validateEmail(Email)) {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
       return;
     }
-    if (await LoginAPI(Email,Password))  router.push("/(tabs)/Dashboard");
+  if (await LoginAPI(Email,Password))  router.push("/(tabs)/Dashboard");
   }
 
   return (
     <LinearGradient   style={style.container}  colors={['#79D2A0', '#3E6C52']}
     locations={[0.41, 1]}>
- 
- 
-
       <Form style={style.form}>
         <View>
           <Image source={{uri : logo}} style={style.image} resizeMode="contain"/>
@@ -53,8 +50,6 @@ export default function Index() {
        <WhiteSpace/>
           <Button style={style.btn} onPress={HandleLogin}><Text style={style.text}>Đăng nhập</Text></Button>
       </Form>
-  
-   
     </LinearGradient>
   );
 }

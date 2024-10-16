@@ -1,6 +1,6 @@
 import React , { useRef }from 'react';
 import { View, StyleSheet, Pressable ,Animated,Text} from 'react-native';
-import { ListItem, Button, Icon } from '@rneui/themed';
+import { ListItem } from '@rneui/themed';
 
 interface CustomListItemProps {
   name: string;

@@ -11,7 +11,6 @@ export const LoginAPI = async (Email : string, Password : string) =>{
         'accept': '*/*',
       },
     });
-    console.log(response.data.token);
     if (response.status === 200) {
       SetToken(response.data.token);
       return true;
