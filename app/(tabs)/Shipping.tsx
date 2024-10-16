@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, {  useState }  from 'react';
 import { View,Text } from "@ant-design/react-native";
 import CustomListItem from "@/components/CustomItem/CustomItemList";
 import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
@@ -7,13 +7,18 @@ import { StyleSheet } from 'react-native';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
+import Header from '@/components/Header';
+import {  AssignmentNotarizationModel, useAssignmentNotarizations } from '../Model/AssNota';
+import { useShippingTaskList } from '../Model/ShippingModel';
+
 export default function NotarizationTask() {
 
   const [visible, setVisible] = useState(false);
   const [visible2,setVisible2] = useState(false);
   const height = useSharedValue(0);
   const height2 = useSharedValue(0);
-  
+
+
   const animatedStyle = useAnimatedStyle(() => {
     return {
       height: withTiming(height.value, { duration: 500 }),
@@ -34,21 +39,16 @@ export default function NotarizationTask() {
     setVisible2(!visible2);
     height2.value = visible2 ? 0 : 100
   };
-  
-  const data = [
-    {
-      id: '1',
-      name: 'CSX-5392',
-      deadline: '2024-10-15 5:00 PM',
-    }
-  ];
+const AssNotaList = useAssignmentNotarizations();
+const ShippingTaskList = useShippingTaskList();
+  const handleShippingPress = () =>{
 
-  const handleMapPress = () => {
-  };
-
+  }
   return (
+
     <LinearGradient colors={['#79D2A0', '#3E6C52']}
     locations={[0.41, 1]} style={style.container}>
+      <Header username='Thằng ngu' tabName = 'Danh sách công việc'></Header>
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={[style.taskList,{marginTop:25}]}>
         <Text style={style.taskListText}>Shipping Tasks</Text>
@@ -56,14 +56,14 @@ export default function NotarizationTask() {
       </View>
       <SafeAreaView>
         <FlatList
-          data={data}
+          data={ShippingTaskList}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <Animated.View style={animatedStyle}>
               <CustomListItem
-                name={item.name}
+                name={item.code}
                 deadline={item.deadline}
-                onPress={handleMapPress} 
+                onPress={handleShippingPress} 
               />
             </Animated.View>
           )}
@@ -75,20 +75,21 @@ export default function NotarizationTask() {
       </View>
       <SafeAreaView>
         <FlatList
-          data={data}
+          data={AssNotaList}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <Animated.View style={animatedStyle2}>
               <CustomListItem
-                name={item.name}
+                name={item.code}
                 deadline={item.deadline}
-                onPress={handleMapPress} 
+                onPress={handleShippingPress} 
               />
             </Animated.View>
           )}
         />
       </SafeAreaView>
     </GestureHandlerRootView>
+   
     </LinearGradient>
   );
 }

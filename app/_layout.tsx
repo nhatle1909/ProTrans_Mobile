@@ -1,7 +1,8 @@
 
 import { GetToken } from "@/Utils/TokenUtil";
-import { Stack } from "expo-router";
-export function BottomTabLayout(){
+import { router, Stack } from "expo-router";
+
+export function RootLayout(){
   return (
     
     <Stack initialRouteName="index" >

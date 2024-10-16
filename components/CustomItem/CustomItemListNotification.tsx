@@ -1,7 +1,6 @@
-import React , { useRef }from 'react';
-import { View, StyleSheet, Pressable ,Animated,Text} from 'react-native';
-import { ListItem, Button, Icon } from '@rneui/themed';
-import { List } from '@ant-design/react-native';
+import React from 'react';
+import { StyleSheet} from 'react-native';
+import { ListItem} from '@rneui/themed';
 
 interface CustomListItemNotiProps {
   title : string,
