@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GetNotaTask } from '@/Utils/ANAPI/AssignmentNotarizationAPI';
-import {DecodeToken, GetToken } from '@/Utils/TokenUtil';
+import { GetAssignmentNotarizations } from '@/Utils/ANAPI/AssignmentNotarizationAPI';
 import { GetOrder } from '@/Utils/OrderAPI/OrderAPI';
 export interface AssignmentNotarizationModel {
     id: string;
@@ -11,17 +10,15 @@ export interface AssignmentNotarizationModel {
     status: string;
     deadline:  string ; // Adjust the type based on your API's response
   }
-const DataToken = DecodeToken();
-const Token = GetToken();
-export const useAssignmentNotarizations = () => {
+
+export const useAssignmentNotarizations = (Token:string,id:string) => {
   const [assignmentNotarizations, setAssignmentNotarizations] = useState<AssignmentNotarizationModel[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await GetNotaTask(Token, DataToken.Id); // Assuming you have token and id
+        const data = await GetAssignmentNotarizations(Token, id); // Assuming you have token and id
         setAssignmentNotarizations(data); // Update state with initial data
-
         // Iterate through each assignment notarization and fetch order details
         const updatedData = await Promise.all(
           data.map(async (assignment) => {

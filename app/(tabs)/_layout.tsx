@@ -1,5 +1,5 @@
 import React from 'react';
-import {  MaterialIcons,Ionicons } from '@expo/vector-icons';   
+import {  MaterialIcons,Ionicons, AntDesign } from '@expo/vector-icons';   
 import { Tabs } from 'expo-router';
 import Header from '@/components/Header';
 import { View } from '@ant-design/react-native';
@@ -15,7 +15,7 @@ export default () =>{
           }}
         />
         <Tabs.Screen
-          name="Shipping"
+          name="TaskList"
           options={{
             tabBarIcon: ({ focused }) => (
      
@@ -25,13 +25,15 @@ export default () =>{
         />
 
         <Tabs.Screen
-          name="Notarization"
+          name="Notification"
           options={{
             tabBarIcon: ({ focused }) => (
               <Ionicons name="notifications" size={25} color={focused ? '#1CE238' : '#999'} />
             ),
           }}
         />
+  
       </Tabs>
+      
   );
 }

@@ -13,12 +13,12 @@ export default function Index() {
   let [Password,SetPassword] = useState('');
 
   const HandleLogin = async () => {
-  
-  if (!validateEmail(Email)) {
+   
+   if (!validateEmail(Email)) {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
       return;
     }
-  if (await LoginAPI(Email,Password))  router.push("/(tabs)/Dashboard");
+   if (await LoginAPI(Email,Password))  router.push("/(tabs)/Dashboard");  
   }
 
   return (

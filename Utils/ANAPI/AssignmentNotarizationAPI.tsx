@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { client } from "../FetchAPIUtil";
 
-export const GetNotaTask = async (token : string,id : string) =>{
+export const GetAssignmentNotarizations = async (token : string,id : string) =>{
     try {
         const response = await client.get('AssignmentNotarization/'+ id, {
           headers: {
