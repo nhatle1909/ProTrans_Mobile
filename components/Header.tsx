@@ -28,7 +28,7 @@ export const Header: React.FC<HeaderProps> = ({ username,tabName })  => {
           <Image source={{uri : avatar}} style={styles.image} resizeMode="contain"/>
         </View>
         <View>
-      <Text style={styles.welcomeText}>Welcome, {username}</Text>
+      <Text style={styles.welcomeText}>Xin chào, {username}</Text>
       <Text style={styles.timeText}>{tabName}</Text>
       </View>
     </View>

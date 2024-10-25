@@ -8,6 +8,7 @@ export function RootLayout(){
     <Stack initialRouteName="index" >
         <Stack.Screen name="index"  options={{headerShown : false}}/>
         <Stack.Screen name="(tabs)" options={{headerShown : false}}/>
+        <Stack.Screen name="Map"  options={{headerShown : false}}/>
     </Stack>
       );
 }

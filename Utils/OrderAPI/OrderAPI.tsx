@@ -8,7 +8,6 @@ export const GetOrder = async (token : string,id : string) =>{
             Authorization: `Bearer ${token}`
           }
         });
-    
       if (response.status == 200)
       return response.data.data;
       if (response.status == 401) router.replace("/")

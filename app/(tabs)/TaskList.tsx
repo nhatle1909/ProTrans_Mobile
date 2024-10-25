@@ -8,11 +8,14 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
 import Header from '@/components/Header';
-import {  AssignmentNotarizationModel, useAssignmentNotarizations } from '../Model/AssNota';
-import { useShippingTaskList } from '../Model/ShippingModel';
+import {  useAssignmentNotarizations } from '../../Model/AssignmentNotarizationModel';
+import { useShippingTaskList } from '../../Model/ShippingModel';
+import { router} from 'expo-router';
+import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
 
 export default function NotarizationTask() {
-
+  const DataToken = DecodeToken();
+  const Token = GetToken();
   const [visible, setVisible] = useState(false);
   const [visible2,setVisible2] = useState(false);
   const height = useSharedValue(0);
@@ -39,16 +42,19 @@ export default function NotarizationTask() {
     setVisible2(!visible2);
     height2.value = visible2 ? 0 : 100
   };
-const AssNotaList = useAssignmentNotarizations();
-const ShippingTaskList = useShippingTaskList();
-  const handleShippingPress = () =>{
+const AssNotaList = useAssignmentNotarizations(Token,DataToken?.Id);
+const ShippingTaskList = useShippingTaskList(Token,DataToken?.Id);
+const handleShippingPress = (id : string,address : string) =>{
+router.push({pathname:"/Map",params :{id: id,address :  address}})
+  }
+  const Nothing =()=>{
 
   }
   return (
 
     <LinearGradient colors={['#79D2A0', '#3E6C52']}
     locations={[0.41, 1]} style={style.container}>
-      <Header username='Thằng ngu' tabName = 'Danh sách công việc'></Header>
+      <Header username={DataToken.Username} tabName = 'Danh sách công việc'></Header>
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={[style.taskList,{marginTop:25}]}>
         <Text style={style.taskListText}>Shipping Tasks</Text>
@@ -63,7 +69,8 @@ const ShippingTaskList = useShippingTaskList();
               <CustomListItem
                 name={item.code}
                 deadline={item.deadline}
-                onPress={handleShippingPress} 
+                onPress={()=> {handleShippingPress(item.orderId,item.address 
+                )}} 
               />
             </Animated.View>
           )}
@@ -82,7 +89,7 @@ const ShippingTaskList = useShippingTaskList();
               <CustomListItem
                 name={item.code}
                 deadline={item.deadline}
-                onPress={handleShippingPress} 
+                onPress={Nothing} 
               />
             </Animated.View>
           )}
