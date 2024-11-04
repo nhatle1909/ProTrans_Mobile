@@ -1,17 +1,17 @@
 import { View , StyleSheet, Alert,Image} from "react-native";
 import { Form, WhiteSpace,Button,Text,Input} from "@ant-design/react-native";
-import { useState, } from "react";
-import { router} from 'expo-router';
+import { useEffect, useState, } from "react";
+import { router, useFocusEffect} from 'expo-router';
 import { LoginAPI } from "@/Utils/Auth/LoginAPI";
 import { EmailIcon, logo, passwordIcon } from "@/constants/Image";
 import { validateEmail } from "@/Utils/ValidateUtil";
-import { GetToken } from "@/Utils/TokenUtil";
 import { LinearGradient } from "expo-linear-gradient";
+import { GetToken } from "@/Utils/TokenUtil";
 export default function Index() {
 
   let [Email,SetEmail] = useState('');
   let [Password,SetPassword] = useState('');
-
+ 
   const HandleLogin = async () => {
    
    if (!validateEmail(Email)) {
@@ -22,7 +22,7 @@ export default function Index() {
   }
 
   return (
-    <LinearGradient   style={style.container}  colors={['#79D2A0', '#3E6C52']}
+    <LinearGradient   style={style.container}  colors={['#40B59F', '#fff']}
     locations={[0.41, 1]}>
       <Form style={style.form}>
         <View>

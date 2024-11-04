@@ -9,8 +9,9 @@ import { StyleSheet } from "react-native";
 import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 
 export default function MainScreen(){
+const Token = GetToken();
 const data = DecodeToken();
-console.log(data)
+
 const [username,SetUsername] = useState(data.Username);
 const email = data.Email;
   return (

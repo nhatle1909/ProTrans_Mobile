@@ -9,8 +9,7 @@ export const SetToken = async (token : string) => {
     }
 };
 export const GetToken = () => {
-    try {
-        
+
         let token = SecureStore.getItem('jwt');
         
         if (token) {
@@ -20,10 +19,7 @@ export const GetToken = () => {
             router.replace("/")
             return ''; // Return an empty string instead of undefined
           }
-        } catch (error) {
-          console.error('Error retrieving JWT', error);
-          return ''; // Return an empty string in case of error
-        }
+  
 }
 export const RemoveToken = async() => {
         const token = await SecureStore.getItemAsync('jwt');
