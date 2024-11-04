@@ -7,7 +7,7 @@ import { StyleSheet } from "react-native";
 import { GetToken } from "@/Utils/TokenUtil";
 
 export default function NotarizationTask(){
-    console.log(GetToken());
+
     const data = [
         {
           id: '1',

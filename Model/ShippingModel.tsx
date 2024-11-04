@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react';
 import { GetShippings } from '@/Utils/ShippingAPI/ShippingAPI';
 import { GetOrder } from '@/Utils/OrderAPI/OrderAPI';
 export interface ShippingListModel{
-     id: string;
+id: string;
 shipperId: string;
 orderId: string;
 imageUrl: string;
 status: string;
+//----------
 deadline:  string;
 address: string;
-code:string; // Adjust the type based on your API's response
+code:string; 
 }
 
 export const useShippingTaskList = (Token:string,id:string) => {
@@ -19,6 +20,7 @@ export const useShippingTaskList = (Token:string,id:string) => {
       try {
         const data = await GetShippings(Token, id); // Assuming you have token and id
         setShippingTaskList(data); // Update state with initial data
+  
         // Iterate through each assignment notarization and fetch order details
         const updatedData = await Promise.all(
           data.map(async (ShipTask) => {
