@@ -1,20 +1,17 @@
-import { useImageShipping } from '@/Model/ImageShippingModel';
 import { UploadBase64Image } from '@/Utils/FirebaseUtil';
 import { UpdateURL } from '@/Utils/ImageShippingAPI/ImageShippingAPI';
-import { GetToken } from '@/Utils/TokenUtil';
+import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Alert, Button, Image, StyleSheet, Text, View } from 'react-native';
 export default function CameraScreen(){
-
+    const Data = useLocalSearchParams();
     const [permission, requestPermission] = useCameraPermissions();
     const cameraRef = useRef(null);
-    const Data = useLocalSearchParams();
     const Token = GetToken();
-    const ImageShippingid = useImageShipping(Token,Data.taskId.toString());
-    
+    const DataToken = DecodeToken();
     const [photo,setPhoto] = useState({
       uri:'',
       base64:''
@@ -40,14 +37,14 @@ export default function CameraScreen(){
           },
           { text: 'Có', onPress: () => 
             {
-              UploadBase64Image(photo.uri,ImageShippingid[0].id.toString()) .then(imageUrl => {
+              UploadBase64Image(photo.uri,Data.ImageShippingid.toString()) .then(imageUrl => {
                 if (imageUrl) {
                   console.log('Image uploaded successfully:');
 
                   //const encodedUrl = imageUrl.replace(/Images\//, "Images%2F");
-                  UpdateURL(Token,ImageShippingid[0].id.toString(),imageUrl)
-                  
-                  router.push({pathname: '/(tabs)/Shipping' });
+                  UpdateURL(Token,Data.ImageShippingid.toString(),imageUrl)
+
+                  router.push({pathname: '/DocumentList', params:{orderId : Data.orderId,taskId:Data.taskId}});
                   // Use the imageUrl for further operations
                 } else {
                   console.error('Error uploading image');
@@ -56,9 +53,10 @@ export default function CameraScreen(){
               .catch(error => {
                 console.error('Error uploading image:', error);
               });
-              
-          }
+               
+               
          },
+        }
         ]
       );
      

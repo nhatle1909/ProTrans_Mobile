@@ -1,15 +1,15 @@
 import MapView, { Marker,Polyline } from 'react-native-maps';
-import { useState,useEffect, useMemo, useRef, useCallback} from "react";
+import { useState,useEffect, useMemo, useRef} from "react";
 import { StyleSheet } from "react-native";
-import { ConvertAddress, Coordinate, CreateRoute } from "@/Model/MapModel";
+import { ConvertAddress, CreateRoute } from "@/Model/MapModel";
 import { View ,Text,Button} from '@ant-design/react-native';
 import { useLocalSearchParams,router } from 'expo-router';
-import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
-import { AntDesign, Entypo, Feather, FontAwesome, FontAwesome5, FontAwesome6, SimpleLineIcons } from '@expo/vector-icons';
+import { GestureHandlerRootView} from 'react-native-gesture-handler';
+import { FontAwesome, FontAwesome5, FontAwesome6, SimpleLineIcons } from '@expo/vector-icons';
 import { GetToken } from '@/Utils/TokenUtil';
 import { GetOrderData } from '../Model/Order';
 import  BottomSheet,{ BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { greenMarker } from '@/constants/Image';
+import * as Location from 'expo-location';
 export default function Map(){
   const TokenId = GetToken();
   const snapPoints = useMemo(() => ['60%','100%'],[])
@@ -21,28 +21,57 @@ export default function Map(){
       currency: 'VND',
     }).format(value);
   }
-  const Id = useLocalSearchParams();
+  const Data = useLocalSearchParams();
   const [region, setRegion] = useState({
     latitude: 10.837932096000031,
     longitude: 106.83272935100007,
     latitudeDelta: 0.0722,
     longitudeDelta: 0.0221,
   });
-  const origin = {latitude: 10.837932096000031,
-    longitude: 106.83272935100007}
 
-  const [Address] = useState<string>(Id.address.toString())
   
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [origin, setOrigin] = useState({
+    latitude: 0,
+    longitude: 0,
+  });
+
+  useEffect(() => {
+    (async () => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+  setOrigin({
+    latitude : location.coords.latitude,
+    longitude: location.coords.longitude,
+  })
+    })();
+  }, []);
+
+  const [Address] = useState<string>(Data.address.toString())
+
   const DestinationCoor = ConvertAddress(Address)
-  const routes = CreateRoute(DestinationCoor.latitude,DestinationCoor.longitude);
+  const routes = CreateRoute(origin.latitude,origin.longitude,DestinationCoor.latitude,DestinationCoor.longitude);
     
-  const data = GetOrderData(TokenId,Id.id.toString());
+  const data = GetOrderData(TokenId,Data.orderId.toString());
   let price = "";
 
     if ( data?.totalPrice !== undefined) {
       price = formatPrice(data.totalPrice);
     }
-  
+    const navigation = () =>{
+      if (Data.type === 'Ship') {
+        router.replace({pathname:"/Payment",params:{taskId:Data.taskId,orderId:Data.orderId}})
+      }
+      if (Data.type === 'Pickup'){
+        router.replace({pathname:"/DocumentList",params:{orderId:Data.orderId,taskId:Data.taskId}})
+      }  
+    }
     return (
       <View style={Style.container}>  
 
@@ -125,7 +154,7 @@ export default function Map(){
           </View>
       </View>
       <View style={Style.buttonPanel}>
-           <Button style={Style.btn}onPress={()=>router.replace("/Camera")}>Hoàn thành</Button>
+           <Button style={Style.btn}onPress={()=>navigation()}>Hoàn thành</Button>
          <Button style={Style.btn} onPress={()=>router.replace("/(tabs)/Shipping")}> Quay lại</Button>
       </View>
       </View>

@@ -1,5 +1,5 @@
 import * as firebase from 'firebase/app';
-import { getStorage, ref, uploadBytes, uploadString } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes, uploadString } from "firebase/storage";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 
@@ -23,14 +23,32 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
-const storageRef = ref(storage, `Images/${Date.now()}.png`);
-// Function to upload image from base64 string
-export const UploadBase64Image = async (image : string) =>{
-  fetch(image)
-  .then(response => response.blob())
-  .then(blob => {
-  uploadBytes(storageRef,blob).then((snapshot) => {
-    console.log('Uploaded Image');
+
+export const getURIImage =  (name:string)=>{
+  const storageRef = ref(storage, `Images/${name}.png`);
+  getDownloadURL(storageRef).then((url) => {
+    return url;
+  })
+  .catch((error) => {
+    console.error('Error getting download URL:', error);
+    return null; // Or handle the error appropriately
   });
-})
 }
+// Function to upload image from base64 string
+export const UploadBase64Image = async (image : string,name:string) =>{
+  const storageRef = ref(storage, `Images/${name}.png`);
+  const blob = await fetch(image).then(response => response.blob());
+
+  try {
+    const uploadTask = uploadBytes(storageRef, blob);
+
+    await uploadTask; // Wait for the upload to complete
+
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL;
+  } catch (error) {
+    console.error('Error uploading image:', error);   
+
+    return null;
+  }
+};

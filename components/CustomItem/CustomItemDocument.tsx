@@ -3,16 +3,18 @@ import { View, StyleSheet, Pressable ,Animated,Text} from 'react-native';
 import { ListItem } from '@rneui/themed';
 
 interface CustomListItemProps {
-  name: string;
-  money:string;
-  deadline: string;
+  lan1: string;
+  lan2: string
+  pageNumber:string;
+  code: string;
   onPress: () => void;
 }
 
-export const CustomListItem: React.FC<CustomListItemProps> = ({
-  name,
-  money,
-  deadline,
+export const CustomListDocument: React.FC<CustomListItemProps> = ({
+  lan1,
+  lan2,
+  pageNumber,
+  code  ,
   onPress,
 }) => {
 
@@ -53,14 +55,15 @@ export const CustomListItem: React.FC<CustomListItemProps> = ({
           <ListItem.Content style={styles.content}>
           
           <View style={styles.valueContainer}>
-              <Text style={{fontSize:13}}>{money}</Text>
+              <Text style={{fontSize:13}}>{code}</Text>
+              
             </View>
-          <View style={[styles.address,{ paddingBottom:5,borderBottomWidth:1,}]}>
-              <Text style={styles.label}>{name}</Text>
+            
+          <View style={styles.address}>
+              <Text style={[styles.label,{alignSelf:'flex-start'}]}>{lan1}</Text>
+              <Text style={[styles.label,{alignSelf:'flex-end'}]}>{lan2}</Text>
             </View>
-            <View style={styles.deadline}>
-              <Text style={[styles.label,{color:'grey'}]}>{deadline}</Text>
-            </View>
+           
           </ListItem.Content>
      
         </ListItem>
@@ -87,7 +90,9 @@ const styles = StyleSheet.create({
     width:'100%',
     marginTop:5,
     alignItems:'flex-start',
- 
+    flexDirection:'row',
+    justifyContent:'space-between',
+    paddingBottom:5,borderBottomWidth:1,
   },
   deadline:{
     width:'100%',

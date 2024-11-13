@@ -1,38 +1,39 @@
 import React  from 'react';
-import {CustomListItem} from "@/components/CustomItem/CustomItemList";
-import { FlatList, GestureHandlerRootView} from "react-native-gesture-handler";
+import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, Text} from 'react-native';
+import { StyleSheet} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {Header} from '@/components/Header';
-import { usePickupList } from '../../Model/ShippingModel';
-import { router} from 'expo-router';
+import { router, useLocalSearchParams} from 'expo-router';
 import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
-
+import { useDocumentList } from '@/Model/DocumentModel';
+import {CustomListDocument} from '@/components/CustomItem/CustomItemDocument';
 
 export default function NotarizationTask() {
   const Token = GetToken();
+  const Data = useLocalSearchParams();
   const DataToken = DecodeToken();
-  const data = usePickupList(Token,DataToken.Id);
-  const handleShippingPress = (id : string,address : string,taskId : string) =>{
-    router.push({pathname:"/Map",params :{orderId: id,address :  address,taskId:taskId, type:'Pickup'}})
+  const data = useDocumentList(Token,Data.taskId);
+  const handleShippingPress = (id : string) =>{
+    router.push({pathname:"/Camera2",params :{ImageShippingid: id,orderId : Data.orderId,taskId:Data.taskId}})
   }
   if (data !== null){
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={style.container}>
-      <Header username={DataToken.Username} tabName = 'Danh sách tài liệu cần nhận'></Header>
+      <Header username={DataToken.Username} tabName = 'D'></Header>
     <GestureHandlerRootView >
      <SafeAreaView style={style.itemContainer}>
         <FlatList
           data={data}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (       
-              <CustomListItem
-                name={item.address}
-                deadline={item.deadline}
-                money={item.code}
-                onPress={()=> {handleShippingPress(item.orderId,item.address,item.id)}} /> 
+              <CustomListDocument
+                code={item.document.code}
+                lan1={item.document.firstLanguage}
+                lan2={item.document.secondLanguage}
+                pageNumber={item.document.pageNumber}
+                onPress={()=>{handleShippingPress(item.id)}} /> 
               )}
       />
       </SafeAreaView>
@@ -42,11 +43,7 @@ export default function NotarizationTask() {
 }
 else {
   return (
-    <LinearGradient colors={['#40B59F', '#fff']}
-  locations={[0.41, 1]} style={style.container}>
-    <Header username={DataToken.Username} tabName = 'Danh sách công việc'></Header>
-    <Text style={style.title}>Hiện không có công việc</Text>
-    </LinearGradient>
+    router.push("/(tabs)/Dashboard")
   ) 
 }
 }

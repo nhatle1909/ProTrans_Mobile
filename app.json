@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.cadenz.ProTransMobile"
     },
     "web": {
       "bundler": "metro",
@@ -29,11 +30,22 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      ["expo-font", { "fonts": [ "./assets/fonts/Quicksand.ttf" ] } ]
-      
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Quicksand.ttf"
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "71419a21-6e85-41e7-a07e-88a57a03d104"
+      }
     }
   }
 }

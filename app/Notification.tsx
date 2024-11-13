@@ -1,10 +1,10 @@
-import { Text,View } from "@ant-design/react-native";
+
 import { LinearGradient } from "expo-linear-gradient";
-import CustomListItemNoti from "@/components/CustomItem/CustomItemListNotification";
+import {CustomListItemNoti} from "@/components/CustomItem/CustomItemListNotification";
 import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native";
-import { GetToken } from "@/Utils/TokenUtil";
+
 
 export default function NotarizationTask(){
 

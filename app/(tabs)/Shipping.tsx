@@ -1,10 +1,10 @@
 import React, {  useState }  from 'react';
-import CustomListItem from "@/components/CustomItem/CustomItemList";
+import {CustomListItem} from "@/components/CustomItem/CustomItemList";
 import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Header from '@/components/Header';
+import {Header} from '@/components/Header';
 import { useShippingTaskList } from '../../Model/ShippingModel';
 import { router} from 'expo-router';
 import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
@@ -13,8 +13,9 @@ export default function NotarizationTask() {
   const Token = GetToken();
   const DataToken = DecodeToken();
   const data = useShippingTaskList(Token,DataToken.Id);
-  const handleShippingPress = (id : string,address : string) =>{
-    router.push({pathname:"/Map",params :{id: id,address :  address}})
+  const handleShippingPress = (id : string,orderId : string,address : string) =>{
+ 
+    router.push({pathname:"/Map",params :{taskId : id,orderId: orderId,address :  address, type:'Ship'}})
   }
   if (data !== null){
   return (
@@ -31,7 +32,7 @@ export default function NotarizationTask() {
                 name={item.address}
                 deadline={item.deadline}
                 money={item.code}
-                onPress={()=> {handleShippingPress(item.orderId,item.address)}} /> 
+                onPress={()=> {handleShippingPress(item.id,item.orderId,item.address)}} /> 
               )}
       />
       </SafeAreaView>
@@ -43,7 +44,7 @@ else {
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
   locations={[0.41, 1]} style={style.container}>
-    <Header username={DataToken.Username} tabName = 'Danh sách công việc'></Header>
+    <Header username={DataToken.Username} tabName = 'Danh sách đơn hàng cần giao'></Header>
     <Text style={style.title}>Hiện không có công việc</Text>
     </LinearGradient>
   ) 
@@ -68,7 +69,7 @@ const style = StyleSheet.create({
     alignSelf:'center',
     marginTop:15,
     backgroundColor:'#fff',
-    height:'100%'
+    height:'85%'
   },
   title:{
     fontWeight:'bold',
@@ -76,5 +77,22 @@ const style = StyleSheet.create({
     marginTop:20,
     alignSelf:'center',
     color:'#fff'
+  },
+  buttonContainer:{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    
+  },
+  button:{
+    flex: 1,
+    backgroundColor: '#f0f0f0',
+  
+    marginHorizontal:5,
+    alignItems: 'center',
+  },
+  text:{
+    fontSize:20,
+    textAlign:'center',
+    marginTop:5
   }
 });

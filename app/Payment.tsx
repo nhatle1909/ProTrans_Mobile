@@ -1,16 +1,15 @@
-import Header from "@/components/Header";
-import { background } from "@/constants/Image";
+import {Header} from "@/components/Header";
 import { DecodeToken, GetToken } from "@/Utils/TokenUtil";
-import { Form, Text,View, WhiteSpace, } from "@ant-design/react-native";
-import Input from "@ant-design/react-native/lib/input-item/Input";
+import { Button, Text,View } from "@ant-design/react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView, ScrollView,Switch } from "react-native-gesture-handler";
 export default function MainScreen(){
 const Token = GetToken();
 const data = DecodeToken();
-
+const Data = useLocalSearchParams();
 const [isEnabled, setIsEnabled] = useState(false);
 const [PaymentMethod,setPaymentMethod] = useState("Tiền mặt")
 const toggleSwitch = () => {
@@ -18,8 +17,11 @@ const toggleSwitch = () => {
   if (isEnabled) setPaymentMethod("Tiền mặt")
   if (!isEnabled) setPaymentMethod("Chuyển qua VNPay")  
 };
+const navigate = () => {
+    router.replace({pathname:"/Camera",params:{taskId:Data.taskId,orderId:Data.orderId}})
+}
   return (
-    <LinearGradient colors={['#79D2A0', '#3E6C52']}
+    <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={Style.background}>
     
     <Header username={data.Username} tabName = 'Thông tin cá nhân'></Header>
@@ -27,13 +29,14 @@ const toggleSwitch = () => {
     <View style={Style.paymentmethod}>
     <Switch
         trackColor={{ false: "#767577", true: "#81b0ff" }}
-        thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+        thumbColor={isEnabled ? "#fff" : "#000"}
         ios_backgroundColor="#3e3e3e"
         onValueChange={toggleSwitch}
         value={isEnabled}   
         style={Style.switch}
       />
       <Text style={Style.text}>{PaymentMethod}</Text>
+      <Button onPress={navigate}></Button>
       </View>
       </GestureHandlerRootView>
    </LinearGradient>

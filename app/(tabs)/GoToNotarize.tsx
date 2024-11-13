@@ -1,22 +1,26 @@
-import React  from 'react';
+import React from 'react';
 import {CustomListItem} from "@/components/CustomItem/CustomItemList";
-import { FlatList, GestureHandlerRootView} from "react-native-gesture-handler";
+import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, Text} from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {Header} from '@/components/Header';
-import { usePickupList } from '../../Model/ShippingModel';
+
 import { router} from 'expo-router';
 import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
 
+import { useAssignmentNotarizations } from '@/Model/AssignmentNotarizationModel';
+import { CustomListNotarize } from '@/components/CustomItem/CustomItemNotarize';
 
-export default function NotarizationTask() {
+export default function NotarizationTask2() {
   const Token = GetToken();
   const DataToken = DecodeToken();
-  const data = usePickupList(Token,DataToken.Id);
-  const handleShippingPress = (id : string,address : string,taskId : string) =>{
-    router.push({pathname:"/Map",params :{orderId: id,address :  address,taskId:taskId, type:'Pickup'}})
-  }
+  const data = useAssignmentNotarizations(Token,DataToken.Id);
+  console.log(data);
+    const handleShippingPress = (id : string,address : string) =>{
+      router.push({pathname:"/NotarizationDetail",params :{id: id,address:  address}})
+    }
+  
   if (data !== null){
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
@@ -28,11 +32,12 @@ export default function NotarizationTask() {
           data={data}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (       
-              <CustomListItem
-                name={item.address}
+              <CustomListNotarize
+              id={item.id}
+                status={item.status}
                 deadline={item.deadline}
-                money={item.code}
-                onPress={()=> {handleShippingPress(item.orderId,item.address,item.id)}} /> 
+                
+                  onPress={()=> {handleShippingPress(item.id,item.status)}} /> 
               )}
       />
       </SafeAreaView>

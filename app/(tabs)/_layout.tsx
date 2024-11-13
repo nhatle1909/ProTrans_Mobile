@@ -1,18 +1,11 @@
 import React from 'react';
-import {  MaterialIcons,Ionicons, AntDesign } from '@expo/vector-icons';   
+import {  MaterialIcons,Ionicons} from '@expo/vector-icons';   
 import { Tabs } from 'expo-router';
+import { MyTabBar } from '@/components/CustomItem/MyTabBar';
 
 export default () =>{
   return (
-      <Tabs initialRouteName="Dashboard" screenOptions={{ tabBarShowLabel: false, tabBarInactiveBackgroundColor: '#fff', tabBarActiveTintColor: '#000',headerShown:false }}>
-        <Tabs.Screen
-          name="Dashboard"
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <MaterialIcons name="dashboard" size={25} color={focused ? '#1CE238' : '#999'} />
-            ),
-          }}
-        />
+      <Tabs  tabBar={props => <MyTabBar{...props} />} screenOptions={{ tabBarShowLabel: false, tabBarInactiveBackgroundColor: '#fff', tabBarActiveTintColor: '#000',headerShown:false }}>
         <Tabs.Screen
           name="Shipping"
           options={{
@@ -25,6 +18,14 @@ export default () =>{
 
         <Tabs.Screen
           name="Notarization"
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Ionicons name="notifications" size={25} color={focused ? '#1CE238' : '#999'} />
+            ),
+          }}
+        />
+     <Tabs.Screen
+          name="GoToNotarize"
           options={{
             tabBarIcon: ({ focused }) => (
               <Ionicons name="notifications" size={25} color={focused ? '#1CE238' : '#999'} />

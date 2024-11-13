@@ -3,15 +3,15 @@ import { View, StyleSheet, Pressable ,Animated,Text} from 'react-native';
 import { ListItem } from '@rneui/themed';
 
 interface CustomListItemProps {
-  name: string;
-  money:string;
+  id : string;
+  status : string;
   deadline: string;
   onPress: () => void;
 }
 
-export const CustomListItem: React.FC<CustomListItemProps> = ({
-  name,
-  money,
+export const CustomListNotarize: React.FC<CustomListItemProps> = ({
+  id,
+  status,
   deadline,
   onPress,
 }) => {
@@ -53,10 +53,10 @@ export const CustomListItem: React.FC<CustomListItemProps> = ({
           <ListItem.Content style={styles.content}>
           
           <View style={styles.valueContainer}>
-              <Text style={{fontSize:13}}>{money}</Text>
+              <Text style={{fontSize:13}}>{status}</Text>
             </View>
           <View style={[styles.address,{ paddingBottom:5,borderBottomWidth:1,}]}>
-              <Text style={styles.label}>{name}</Text>
+              <Text style={styles.label}>{id}</Text>
             </View>
             <View style={styles.deadline}>
               <Text style={[styles.label,{color:'grey'}]}>{deadline}</Text>

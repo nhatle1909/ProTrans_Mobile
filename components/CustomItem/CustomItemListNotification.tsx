@@ -7,7 +7,7 @@ interface CustomListItemNotiProps {
   message : string,
 }
 
-const CustomListItemNoti: React.FC<CustomListItemNotiProps> = ({
+export const CustomListItemNoti: React.FC<CustomListItemNotiProps> = ({
   title,
   message,
 }) => {
@@ -55,4 +55,3 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CustomListItemNoti;
