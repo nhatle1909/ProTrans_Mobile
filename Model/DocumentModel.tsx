@@ -23,7 +23,6 @@ export const useDocumentList = (Token:string,id:string) => {
       const fetchData = async () => {
         try {
           const data = await GetDocuments(Token, id); // Assuming you have token and id
-          setDocumentList(data); // Update state with initial data
           // Iterate through each assignment notarization and fetch order details
           const updatedData = await Promise.all(
             data.map(async (item) => {
@@ -45,7 +44,7 @@ export const useDocumentList = (Token:string,id:string) => {
           
   
         } catch (error) {
-          console.error('Error fetching data:', error);
+       
         }
       };
       fetchData();

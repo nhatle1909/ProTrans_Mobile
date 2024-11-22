@@ -8,6 +8,7 @@ import { router, useLocalSearchParams} from 'expo-router';
 import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
 import { useDocumentList } from '@/Model/DocumentModel';
 import {CustomListDocument} from '@/components/CustomItem/CustomItemDocument';
+import { UpdateTaskStatusCompleted } from '@/Utils/ShippingAPI/ShippingAPI';
 
 export default function NotarizationTask() {
   const Token = GetToken();
@@ -16,6 +17,10 @@ export default function NotarizationTask() {
   const data = useDocumentList(Token,Data.taskId);
   const handleShippingPress = (id : string) =>{
     router.push({pathname:"/Camera2",params :{ImageShippingid: id,orderId : Data.orderId,taskId:Data.taskId}})
+  }
+  const NavigateBack = () => {
+    UpdateTaskStatusCompleted(Token,Data.taskId.toString())
+    router.push("/(tabs)/Notarization")
   }
   if (data !== null){
   return (
@@ -43,7 +48,7 @@ export default function NotarizationTask() {
 }
 else {
   return (
-    router.push("/(tabs)/Dashboard")
+ NavigateBack()
   ) 
 }
 }

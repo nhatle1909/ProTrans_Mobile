@@ -16,3 +16,20 @@ export const GetOrder = async (token : string,id : string) =>{
         return false;
       }
 }
+
+export const UpdateOrder = async (token : string,id : string) =>{
+  try {
+      const response = await client.put('Order/UpdateOrderStatus?id='+ id+'&status=Delivered', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    if (response.status == 200)
+    return response.data.data;
+    if (response.status == 401) router.replace("/")
+    } catch (error) {
+      console.error('Error Calling: Order ', error );
+      return false;
+    }
+}
+

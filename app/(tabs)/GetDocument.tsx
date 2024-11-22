@@ -1,22 +1,27 @@
-import React, {  useState }  from 'react';
+import React, {  useEffect, useRef, useState }  from 'react';
 import {CustomListItem} from "@/components/CustomItem/CustomItemList";
 import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {Header} from '@/components/Header';
-import { useShippingTaskList } from '../../Model/ShippingModel';
+import { usePrepareShippingTaskList, useShippingTaskList } from '../../Model/ShippingModel';
 import { router} from 'expo-router';
 import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
+import { UpdateTaskStatusShipping } from '@/Utils/ShippingAPI/ShippingAPI';
 
 export default function NotarizationTask() {
   const Token = GetToken();
   const DataToken = DecodeToken();
-  const data = useShippingTaskList(Token,DataToken.Id);
-  const handleShippingPress = (id : string,orderId : string,address : string) =>{
- 
-    router.push({pathname:"/MapShipping",params :{taskId : id,orderId: orderId,address :  address}})
+
+  let data = usePrepareShippingTaskList(Token,DataToken.Id);
+
+
+  const handleShippingPress = (id : string,orderId : string,address:string) =>{
+    router.push({pathname:"/MapDocument",params :{taskId : id,orderId: orderId,address :  address}})
   }
+
+
   if (data !== null){
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
@@ -29,10 +34,10 @@ export default function NotarizationTask() {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (       
               <CustomListItem
-                name={item.address}
+                name={item.agencyName}
                 deadline={item.deadline}
                 money={item.orderCode}
-                onPress={()=> {handleShippingPress(item.id,item.orderId,item.address)}} /> 
+                onPress={()=> {handleShippingPress(item.id,item.orderId,item.agencyaddress)}} /> 
               )}
       />
       </SafeAreaView>

@@ -9,6 +9,8 @@ export const GetDocuments = async (token : string,id : string) =>{
             Authorization: `Bearer ${token}`
           }
         });
+  
+        
       if (response.status == 200)
         
       return response.data.data;

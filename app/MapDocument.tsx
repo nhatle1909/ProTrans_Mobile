@@ -5,22 +5,19 @@ import { ConvertAddress, CreateRoute } from "@/Model/MapModel";
 import { View ,Text,Button} from '@ant-design/react-native';
 import { useLocalSearchParams,router } from 'expo-router';
 import { GestureHandlerRootView} from 'react-native-gesture-handler';
-import { FontAwesome, FontAwesome5, FontAwesome6, SimpleLineIcons } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, FontAwesome5, FontAwesome6, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
 import { GetToken } from '@/Utils/TokenUtil';
 import { GetOrderData } from '../Model/Order';
 import  BottomSheet,{ BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import * as Location from 'expo-location';
+import { formatPrice } from '@/Utils/ValidateUtil';
+import { UpdateTaskStatusShipping } from '@/Utils/ShippingAPI/ShippingAPI';
 export default function Map(){
   const TokenId = GetToken();
   const snapPoints = useMemo(() => ['60%','100%'],[])
   const bottotSheetRef = useRef(null);
   const pinColor = "Green"
-  function formatPrice(value:number) {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(value);
-  }
+  
   const Data = useLocalSearchParams();
   const [region, setRegion] = useState({
     latitude: 10.837932096000031,
@@ -54,23 +51,20 @@ export default function Map(){
   }, []);
 
   const [Address] = useState<string>(Data.address.toString())
-
+  
   const DestinationCoor = ConvertAddress(Address)
   const routes = CreateRoute(origin.latitude,origin.longitude,DestinationCoor.latitude,DestinationCoor.longitude);
     
   const data = GetOrderData(TokenId,Data.orderId.toString());
+
   let price = "";
 
     if ( data?.totalPrice !== undefined) {
       price = formatPrice(data.totalPrice);
     }
     const navigation = () =>{
-      if (Data.type === 'Ship') {
-        router.replace({pathname:"/Payment",params:{taskId:Data.taskId,orderId:Data.orderId}})
-      }
-      if (Data.type === 'Pickup'){
-        router.replace({pathname:"/DocumentList",params:{orderId:Data.orderId,taskId:Data.taskId}})
-      }  
+      UpdateTaskStatusShipping(TokenId,Data.taskId.toString());
+      router.replace("/(tabs)/GetDocument")
     }
     return (
       <View style={Style.container}>  
@@ -78,8 +72,8 @@ export default function Map(){
       <MapView 
       style={Style.map}
       initialRegion={region}>
-    <Marker coordinate={origin}/>
-      <Marker coordinate={DestinationCoor}  pinColor={'green'}/>
+    <Marker coordinate={origin} pinColor={'green'}/>
+      <Marker coordinate={DestinationCoor}  />
       <Polyline coordinates={routes} strokeColor='blue' strokeWidth={2}
      />
    </MapView>
@@ -95,7 +89,7 @@ export default function Map(){
         index={0}
         snapPoints={snapPoints}
         enableDynamicSizing={false}
-        style={{borderWidth:3,borderRadius:20}}
+        style={{borderRadius:20}}
         >
        <BottomSheetScrollView style ={Style.panel} >
         <View >
@@ -103,59 +97,40 @@ export default function Map(){
 
           
         <View style={Style.item}>
-          <SimpleLineIcons style={Style.icon} name="location-pin" size={25} color="red"/>
+          <SimpleLineIcons style={Style.icon} name="location-pin" size={25} color="green"/>
           <Text style={Style.text}>Vị trí hiện tại</Text>
           </View>
           <View style={Style.item}>
-          <SimpleLineIcons style={Style.icon} name="location-pin" size={25} color="green" />
-          <Text style={Style.text}>{data?.address}</Text>
+          <SimpleLineIcons style={Style.icon} name="location-pin" size={25} color="red" />
+          <Text style={Style.text}>{Address}</Text>
           </View>
       </View>
-      <View style={Style.infoPanel}>
-        
-        <Text style={Style.Title}>Thông tin khách hàng</Text>
-          <View style={{flexDirection:'row'}}>
-          <FontAwesome style={Style.icon} name="user" size={25} color="black" />
-          <Text style={Style.text}>{data?.fullName}</Text>
-          </View>
-        
-          <View style={Style.item}>
-          <FontAwesome style={Style.icon} name="phone" size={25} color="black" />
-          <Text style={Style.text}>{data?.phoneNumber}</Text>
-          </View>
-          <View style={Style.item}>
-          <SimpleLineIcons style={Style.icon} name="location-pin" size={25} color="green" />
-          <Text style={Style.text}>{data?.address}</Text>
-          </View>
-      </View>
+     
       <View style={[Style.infoPanel]}>
         
-        <Text style={Style.Title}>Thông tin đơn hàng</Text>
+        <Text style={Style.Title}>Thông tin tiếp nhận đơn hàng</Text>
         <View style={Style.item}>
-          <FontAwesome6 style={Style.icon} name="file-code" size={25} color="black" />
-          <Text style={[Style.text,{textAlign:'right',marginRight:10}]}>{data?.id}</Text>
+          
+          <AntDesign name="codesquareo" style={Style.icon} size={25} color="black" />
+          <Text style={[Style.text,{textAlign:'left',marginRight:10}]}>Mã đơn hàng</Text>
+          <Text style={[Style.text,{textAlign:'right',marginRight:10}]}>{data?.orderCode}</Text>
           </View>
         
           <View style={Style.item}>
-          <FontAwesome6 style={Style.icon} name="calendar-times" size={25} color="black" />
+          <MaterialCommunityIcons name="calendar-clock" style={Style.icon}   size={25} color="black" />
+          <Text style={[Style.text,{textAlign:'left',marginRight:10}]}>Hạn giao đơn hàng</Text>
           <Text style={[Style.text,{textAlign:'right',marginRight:10}]}>{data?.deadline}</Text>
           </View>
           <View style={Style.item}>
           <FontAwesome6 style={Style.icon} name="calendar-times" size={25} color="black" />
-          <Text style={[Style.text,{textAlign:'right',marginRight:10}]}>{data?.status}</Text>
+          <Text style={[Style.text,{textAlign:'left',marginRight:10}]}>Trạng thái</Text>
+          <Text style={[Style.text,{textAlign:'right',marginRight:10}]}>Đang tiếp nhận</Text>
           </View>
      
       </View>
-      <View style={[Style.infoPanel]}>
-        
-      <View style={Style.item}>
-          <FontAwesome5 style={Style.icon} name="money-bill" size={25} color="green" />
-          <Text style={[Style.text,{textAlign:'right',marginRight:15}]}>{price}</Text>
-          </View>
-      </View>
       <View style={Style.buttonPanel}>
-           <Button style={Style.btn}onPress={()=>navigation()}>Hoàn thành</Button>
-         <Button style={Style.btn} onPress={()=>router.replace("/(tabs)/Shipping")}> Quay lại</Button>
+      <Button style={[Style.btn,{marginLeft:'7%'}]} onPress={()=>router.replace("/(tabs)/Notarization")}> Quay lại</Button>
+      <Button style={[Style.btn,{marginRight:'7%', backgroundColor:'green'}]}onPress={()=>navigation()}><Text style={{color:'#fff',fontSize:16}}>Hoàn thành</Text></Button>
       </View>
       </View>
       </BottomSheetScrollView>
@@ -178,6 +153,7 @@ export default function Map(){
         flex:1,
         width:'100%', 
         alignContent:'center',
+
       },
       buttonPanel:{
         height:'50%',
@@ -190,6 +166,7 @@ export default function Map(){
         borderBottomWidth: 1, // Add border width here
         borderColor: 'grey',
         borderRadius:5,
+        justifyContent:'space-between'
       },
       infoPanel:{
   

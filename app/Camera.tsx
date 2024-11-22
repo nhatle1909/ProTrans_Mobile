@@ -1,12 +1,15 @@
 import { useImageShipping } from '@/Model/ImageShippingModel';
 import { UploadBase64Image } from '@/Utils/FirebaseUtil';
 import { UpdateURL } from '@/Utils/ImageShippingAPI/ImageShippingAPI';
+import { UpdateOrder } from '@/Utils/OrderAPI/OrderAPI';
+import { UpdateTaskStatusCompleted } from '@/Utils/ShippingAPI/ShippingAPI';
 import { GetToken } from '@/Utils/TokenUtil';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Alert, Button, Image, StyleSheet, Text, View } from 'react-native';
+
 export default function CameraScreen(){
 
     const [permission, requestPermission] = useCameraPermissions();
@@ -14,7 +17,8 @@ export default function CameraScreen(){
     const Data = useLocalSearchParams();
     const Token = GetToken();
     const ImageShippingid = useImageShipping(Token,Data.taskId.toString());
-    
+    console.log(Data.taskId)
+    console.log(ImageShippingid)
     const [photo,setPhoto] = useState({
       uri:'',
       base64:''
@@ -46,7 +50,8 @@ export default function CameraScreen(){
 
                   //const encodedUrl = imageUrl.replace(/Images\//, "Images%2F");
                   UpdateURL(Token,ImageShippingid[0].id.toString(),imageUrl)
-                  
+                  UpdateOrder(Token,Data.orderId.toString());
+                  UpdateTaskStatusCompleted(Token,Data.taskId.toString());
                   router.push({pathname: '/(tabs)/Shipping' });
                   // Use the imageUrl for further operations
                 } else {

@@ -19,7 +19,7 @@ export default function NotarizationDetail2(){
     const item = useLocalSearchParams();
     
     const [documentList,setDocumentList] = useState<NotarizationDetail[]>([]); // Use a state variable to store received data
-
+  console.log(item.id)
   const fetchedDocumentList = useDocumentList2(token, item.id);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ console.log(documentList)
    
         <LinearGradient  style={style.container}  colors={['#40B59F', '#fff']}
         locations={[0.41, 1]}>
-             <Header username={data.Username} tabName="Chi tiết công việc"></Header>
+             <Header username={data.Username} tabName="Danh sách tài liệu cần công chứng"></Header>
       
              <GestureHandlerRootView >
      <SafeAreaView style={style.itemContainer}>
@@ -82,11 +82,12 @@ const style = StyleSheet.create({
     elevation: 5,
     borderTopRightRadius:15,
     borderTopLeftRadius:15,
+    borderRadius:15,
     width:'85%',
     alignSelf:'center',
     marginTop:15,
     backgroundColor:'#fff',
-    height:'85%'
+    height:'95%'
   },
     container:{
         flex: 1,
@@ -115,13 +116,14 @@ const style = StyleSheet.create({
         paddingBottom:10
       },
     buttonPanel:{
-        height:'50%',
+   
+   
         width:'100%',
         flexDirection:'row',
         alignContent:'center',
         alignSelf:'center',
         marginBottom:15,
-        borderBottomWidth: 1, // Add border width here
+
         borderColor: 'grey',
         borderRadius:5,
       }, btn:{

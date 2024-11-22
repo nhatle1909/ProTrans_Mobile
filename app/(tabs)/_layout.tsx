@@ -6,6 +6,18 @@ import { MyTabBar } from '@/components/CustomItem/MyTabBar';
 export default () =>{
   return (
       <Tabs  tabBar={props => <MyTabBar{...props} />} screenOptions={{ tabBarShowLabel: false, tabBarInactiveBackgroundColor: '#fff', tabBarActiveTintColor: '#000',headerShown:false }}>
+       <Tabs.Screen
+          name="GetDocument"
+          options={{
+            tabBarIcon: ({ focused }) => (
+     
+              <MaterialIcons name="local-shipping" size={25} color={focused ? '#1CE238' : '#999'} />
+            ),
+            unmountOnBlur: true
+          }}
+          
+        />
+
         <Tabs.Screen
           name="Shipping"
           options={{
@@ -13,6 +25,8 @@ export default () =>{
      
               <MaterialIcons name="local-shipping" size={25} color={focused ? '#1CE238' : '#999'} />
             ),
+            unmountOnBlur: true,
+            
           }}
         />
 
@@ -22,6 +36,7 @@ export default () =>{
             tabBarIcon: ({ focused }) => (
               <Ionicons name="notifications" size={25} color={focused ? '#1CE238' : '#999'} />
             ),
+            unmountOnBlur: true
           }}
         />
      <Tabs.Screen
@@ -30,6 +45,7 @@ export default () =>{
             tabBarIcon: ({ focused }) => (
               <Ionicons name="notifications" size={25} color={focused ? '#1CE238' : '#999'} />
             ),
+            unmountOnBlur: true
           }}
         />
   

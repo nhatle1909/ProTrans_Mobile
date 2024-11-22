@@ -1,6 +1,7 @@
 import React , { useRef }from 'react';
 import { View, StyleSheet, Pressable ,Animated,Text} from 'react-native';
 import { ListItem } from '@rneui/themed';
+import { MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
 
 interface CustomListItemProps {
   name: string;
@@ -46,19 +47,22 @@ export const CustomListItem: React.FC<CustomListItemProps> = ({
       onPress={onPress}
       
     >
-      <Animated.View style={[ {transform: [{ scale: scaleValue }] }]}>
+      <Animated.View style={[{transform: [{ scale: scaleValue }] }]}>
    
         <ListItem bottomDivider containerStyle={styles.listItemContainer}>
     
           <ListItem.Content style={styles.content}>
           
           <View style={styles.valueContainer}>
-              <Text style={{fontSize:13}}>{money}</Text>
+              <Text style={{fontSize:16}}>{money}</Text>
             </View>
+            
           <View style={[styles.address,{ paddingBottom:5,borderBottomWidth:1,}]}>
-              <Text style={styles.label}>{name}</Text>
+          <SimpleLineIcons style={styles.icon} name="location-pin" size={23} color="red"/>
+              <Text style={styles.label} numberOfLines={3} ellipsizeMode="tail">{name}</Text>
             </View>
             <View style={styles.deadline}>
+            <MaterialCommunityIcons name="calendar-clock" size={23} style={styles.icon} color="black" />
               <Text style={[styles.label,{color:'grey'}]}>{deadline}</Text>
             </View>
           </ListItem.Content>
@@ -80,40 +84,45 @@ const styles = StyleSheet.create({
   },
   label:
   {  
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
+    flex:1
   },
   address:{
     width:'100%',
     marginTop:5,
     alignItems:'flex-start',
- 
+    flexDirection:'row',
+
+  
   },
   deadline:{
     width:'100%',
     alignItems:'center',
+    flexDirection:'row',
+    marginTop:10
   },
   listItemContainer: {
     width:'90%',
     height:'auto',
     alignSelf:'center',
-    backgroundColor: '#FFFFFF', // Light gray background for list items
+    backgroundColor: '#fff', // Light gray background for list items
     borderRadius: 10,
-    borderWidth:1,
+    borderWidth:0,
     paddingTop: 15,
     shadowColor: '#000',
     shadowOffset: {
-      width: 2,
-      height: 2,
+      width: 0,
+      height: 0,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    borderColor:'#40B59F',
-    marginBottom:15
+    
+    shadowOpacity: 0.9,
+    shadowRadius: 20,
+    elevation: 10,
+  
+    marginVertical:10
   },
   content:{
-    
   },
   listItemTitle: {
     fontSize: 16,
@@ -133,6 +142,10 @@ const styles = StyleSheet.create({
   },
   updateButton: {
     backgroundColor: '#FF9800', // Orange color
+  },
+  icon:{
+    
+    paddingRight:10,
   },
 });
 

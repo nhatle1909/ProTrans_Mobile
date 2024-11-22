@@ -1,6 +1,6 @@
 import { avatar } from "@/constants/Image";
 import { Text,View, } from "@ant-design/react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect,useState } from "react";
 import { StyleSheet,Image } from "react-native";
@@ -26,13 +26,16 @@ export const Header: React.FC<HeaderProps> = ({ username,tabName })  => {
 
   return (
     <View style={styles.header}>
-        <View>
-      <Text style={styles.welcomeText}>Xin chào, {username}</Text>
-      <Text style={styles.timeText}>{tabName}</Text>
+        <View style={styles.notif}>
+      <FontAwesome name="user-circle" size={30} color={'#fff'} onPress={()=>router.push('/Notification')} />
+      </View>
+        <View style = {styles.tabname}>
+       
+      <Text style={styles.timeText}>Xin chào, {username}</Text>
 
       </View>
-      <View style={styles.notif}>
-      <Ionicons name="notifications" size={25} color={'#fff'} onPress={()=>router.push('/Notification')} />
+      <View style={[styles.notif]}>
+      <Ionicons name="notifications" size={30} color={'#fff'} onPress={()=>router.push('/Notification')} />
       </View>
     </View>
   );
@@ -45,17 +48,12 @@ const styles = StyleSheet.create({
   marginLeft:15
   },
   header: {
-    
     flexDirection:'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.33)',
-    padding: 10,
-    alignItems: 'flex-start',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
+    backgroundColor: '#40B59F',
+    padding: 15,
     justifyContent:'space-between'
+
+    
   },
   welcomeText: {
     fontSize: 20,
@@ -64,13 +62,21 @@ const styles = StyleSheet.create({
     color:'white'
   },
   timeText: {
-    fontSize: 16,
-    marginLeft:30,
-    color:'white'
+    fontSize: 20,
+   
+    color:'white',
+    textAlign:'left',
+ 
+  },
+  tabname:{
+    fontWeight:'bold',
+    padding:5,
+  
+
   },
   notif:{
     alignSelf:'center',
-    marginRight:15
+    padding:5,
   }
 });
 

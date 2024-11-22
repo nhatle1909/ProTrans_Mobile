@@ -45,26 +45,33 @@ export function MyTabBar({ state, descriptors, navigation }) {
     });
   }, [state.index]);
   const iconsArray = [
+    {
+      id: 1,
+      routeName: 'GetDocument',
+      name: 'local-shipping',
+      Icon: MaterialIcons,
+      size: 32,
+    },
   {
     id: 2,
     routeName: 'Shipping',
     name: 'local-shipping',
     Icon: MaterialIcons,
-    size: 25,
+    size: 32,
   },
   {
     id: 3,
     routeName: 'Notarization',
     name: 'notifications',
     Icon: Ionicons,
-    size: 25,
+    size: 32,
   },
   {
     id: 4,
     routeName: 'GoToNotarize',
     name: 'notifications',
     Icon: Ionicons,
-    size: 25,
+    size: 32,
   },
 ];
       
@@ -100,8 +107,8 @@ export function MyTabBar({ state, descriptors, navigation }) {
             });
           };
         
-          const currentIcon = iconsArray.find(icon => icon.routeName === route.name);
-          const iconColor = isFocused ? '#1CE238' : '#999'; 
+          const currentIcon = iconsArray[index];
+          const iconColor = isFocused ? '#40B59F' : '#999'; 
           return (
             <Animated.View
             style={[style.item, { transform: [{ scale }], opacity }]}
@@ -144,15 +151,14 @@ export function MyTabBar({ state, descriptors, navigation }) {
       shadowOpacity: 0.3, // Độ mờ của bóng
       shadowRadius: 5, // Bán kính của bóng
       elevation: 5, 
+
         
     },
     item:{
         flex:1,
         justifyContent:'center',
         alignItems:'center',
-        gap:5
+        gap:5,
+   
     }
   }) 
- // {icon.route({
-   //    color:isFocused  ? '#1CE238' : '#999'
- //  })}

@@ -15,7 +15,7 @@ export default function NotarizationTask() {
   const DataToken = DecodeToken();
   const data = usePickupList(Token,DataToken.Id);
   const handleShippingPress = (id : string,address : string,taskId : string) =>{
-    router.push({pathname:"/Map",params :{orderId: id,address :  address,taskId:taskId, type:'Pickup'}})
+    router.push({pathname:"/MapPickup",params :{orderId: id,address :  address,taskId:taskId}})
   }
   if (data !== null){
   return (
@@ -23,15 +23,19 @@ export default function NotarizationTask() {
     locations={[0.41, 1]} style={style.container}>
       <Header username={DataToken.Username} tabName = 'Danh sách tài liệu cần nhận'></Header>
     <GestureHandlerRootView >
+      
      <SafeAreaView style={style.itemContainer}>
-        <FlatList
+      
+      <Text style={style.title1}>Đơn hàng cần nhận tài liệu</Text>
+              <FlatList
+          
           data={data}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (       
               <CustomListItem
                 name={item.address}
                 deadline={item.deadline}
-                money={item.code}
+                money={item.orderCode}
                 onPress={()=> {handleShippingPress(item.orderId,item.address,item.id)}} /> 
               )}
       />
@@ -68,7 +72,7 @@ const style = StyleSheet.create({
     width:'85%',
     alignSelf:'center',
     marginTop:15,
-    backgroundColor:'#fff',
+    backgroundColor:'#Fff',
     height:'85%'
   },
   title:{
@@ -94,5 +98,12 @@ const style = StyleSheet.create({
     fontSize:20,
     textAlign:'center',
     marginTop:5
+  },
+  title1:{
+    textAlign:'center',
+    fontSize:20,
+    fontWeight:'bold',
+    padding:5,
+    marginBottom:5
   }
 });

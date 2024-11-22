@@ -14,7 +14,7 @@ export const useAssignmentNotarizations = (Token:string,id:string) => {
     const fetchData = async () => {
       try {
         const data = await GetAssignmentNotarizations(Token, id); // Assuming you have token and id
-        setAssignmentNotarizations(data); // Update state with initial data
+       
     
         // Iterate through each assignment notarization and fetch order details
         const updatedData = await Promise.all(
