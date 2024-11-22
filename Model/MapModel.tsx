@@ -27,12 +27,12 @@ export const ConvertAddress=  (name:string ) => {
     },[]);
    return Coordinate
 }
-export const CreateRoute= (lat:number,long:number) => {
+export const CreateRoute= (lat2:number,long2:number,lat:number,long:number) => {
 
   const [Routes,SetRoutes] = useState<Coordinate[]>([]);
   if (lat >0){
   const fetchData = async () => {
-      let response = await fetch(`https://rsapi.goong.io/Direction?origin=${origin.latitude},${origin.longitude}&destination=${lat},${long}&api_key=20C8fOYZrkTRtDBnIPeTFT5nRQXhQr7rKNlm4p9b`).then(response => response.json())
+      let response = await fetch(`https://rsapi.goong.io/Direction?origin=${lat2},${long2}&destination=${lat},${long}&api_key=20C8fOYZrkTRtDBnIPeTFT5nRQXhQr7rKNlm4p9b`).then(response => response.json())
       .then(data => {
        const listStep= decode(data.routes[0].overview_polyline.points);
        const firstCoor = {latitude : origin.latitude,longitude:origin.longitude}

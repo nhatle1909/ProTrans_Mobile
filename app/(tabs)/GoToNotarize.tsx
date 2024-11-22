@@ -1,38 +1,43 @@
-import React, {  useState }  from 'react';
+import React from 'react';
 import {CustomListItem} from "@/components/CustomItem/CustomItemList";
 import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {Header} from '@/components/Header';
-import { useShippingTaskList } from '../../Model/ShippingModel';
+
 import { router} from 'expo-router';
 import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
 
-export default function NotarizationTask() {
+import { useAssignmentNotarizations } from '@/Model/AssignmentNotarizationModel';
+import { CustomListNotarize } from '@/components/CustomItem/CustomItemNotarize';
+
+export default function NotarizationTask2() {
   const Token = GetToken();
   const DataToken = DecodeToken();
-  const data = useShippingTaskList(Token,DataToken.Id);
-  const handleShippingPress = (id : string,orderId : string,address : string) =>{
- 
-    router.push({pathname:"/MapShipping",params :{taskId : id,orderId: orderId,address :  address}})
-  }
+  const data = useAssignmentNotarizations(Token,DataToken.Id);
+  console.log(data);
+    const handleShippingPress = (id : string,address : string) =>{
+      router.push({pathname:"/NotarizationDetail",params :{id: id,address:  address}})
+    }
+  
   if (data !== null){
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={style.container}>
-      <Header username={DataToken.Username} tabName = 'Danh sách công việc'></Header>
+      <Header username={DataToken.Username} tabName = 'Danh sách tài liệu cần nhận'></Header>
     <GestureHandlerRootView >
      <SafeAreaView style={style.itemContainer}>
         <FlatList
           data={data}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (       
-              <CustomListItem
-                name={item.address}
+              <CustomListNotarize
+              id={item.id}
+                status={item.status}
                 deadline={item.deadline}
-                money={item.orderCode}
-                onPress={()=> {handleShippingPress(item.id,item.orderId,item.address)}} /> 
+                
+                  onPress={()=> {handleShippingPress(item.id,item.status)}} /> 
               )}
       />
       </SafeAreaView>
@@ -44,7 +49,7 @@ else {
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
   locations={[0.41, 1]} style={style.container}>
-    <Header username={DataToken.Username} tabName = 'Danh sách đơn hàng cần giao'></Header>
+    <Header username={DataToken.Username} tabName = 'Danh sách công việc'></Header>
     <Text style={style.title}>Hiện không có công việc</Text>
     </LinearGradient>
   ) 

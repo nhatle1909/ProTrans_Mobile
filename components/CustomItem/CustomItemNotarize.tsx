@@ -1,18 +1,17 @@
 import React , { useRef }from 'react';
 import { View, StyleSheet, Pressable ,Animated,Text} from 'react-native';
 import { ListItem } from '@rneui/themed';
-import { MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
 
 interface CustomListItemProps {
-  name: string;
-  money:string;
+  id : string;
+  status : string;
   deadline: string;
   onPress: () => void;
 }
 
-export const CustomListItem: React.FC<CustomListItemProps> = ({
-  name,
-  money,
+export const CustomListNotarize: React.FC<CustomListItemProps> = ({
+  id,
+  status,
   deadline,
   onPress,
 }) => {
@@ -47,22 +46,19 @@ export const CustomListItem: React.FC<CustomListItemProps> = ({
       onPress={onPress}
       
     >
-      <Animated.View style={[{transform: [{ scale: scaleValue }] }]}>
+      <Animated.View style={[ {transform: [{ scale: scaleValue }] }]}>
    
         <ListItem bottomDivider containerStyle={styles.listItemContainer}>
     
           <ListItem.Content style={styles.content}>
           
           <View style={styles.valueContainer}>
-              <Text style={{fontSize:16}}>{money}</Text>
+              <Text style={{fontSize:13}}>{status}</Text>
             </View>
-            
           <View style={[styles.address,{ paddingBottom:5,borderBottomWidth:1,}]}>
-          <SimpleLineIcons style={styles.icon} name="location-pin" size={23} color="red"/>
-              <Text style={styles.label} numberOfLines={3} ellipsizeMode="tail">{name}</Text>
+              <Text style={styles.label}>{id}</Text>
             </View>
             <View style={styles.deadline}>
-            <MaterialCommunityIcons name="calendar-clock" size={23} style={styles.icon} color="black" />
               <Text style={[styles.label,{color:'grey'}]}>{deadline}</Text>
             </View>
           </ListItem.Content>
@@ -84,45 +80,40 @@ const styles = StyleSheet.create({
   },
   label:
   {  
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: 'bold',
-    flex:1
   },
   address:{
     width:'100%',
     marginTop:5,
     alignItems:'flex-start',
-    flexDirection:'row',
-
-  
+ 
   },
   deadline:{
     width:'100%',
     alignItems:'center',
-    flexDirection:'row',
-    marginTop:10
   },
   listItemContainer: {
     width:'90%',
     height:'auto',
     alignSelf:'center',
-    backgroundColor: '#fff', // Light gray background for list items
+    backgroundColor: '#FFFFFF', // Light gray background for list items
     borderRadius: 10,
-    borderWidth:0,
+    borderWidth:1,
     paddingTop: 15,
     shadowColor: '#000',
     shadowOffset: {
-      width: 0,
-      height: 0,
+      width: 2,
+      height: 2,
     },
-    
-    shadowOpacity: 0.9,
-    shadowRadius: 20,
-    elevation: 10,
-  
-    marginVertical:10
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderColor:'#40B59F',
+    marginBottom:15
   },
   content:{
+    
   },
   listItemTitle: {
     fontSize: 16,
@@ -142,10 +133,6 @@ const styles = StyleSheet.create({
   },
   updateButton: {
     backgroundColor: '#FF9800', // Orange color
-  },
-  icon:{
-    
-    paddingRight:10,
   },
 });
 

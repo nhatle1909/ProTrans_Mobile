@@ -1,24 +1,24 @@
 import { View , StyleSheet, Alert,Image} from "react-native";
 import { Form, WhiteSpace,Button,Text,Input} from "@ant-design/react-native";
 import { useEffect, useState, } from "react";
-import { router, useFocusEffect} from 'expo-router';
+import { router} from 'expo-router';
 import { LoginAPI } from "@/Utils/Auth/LoginAPI";
 import { EmailIcon, logo, passwordIcon } from "@/constants/Image";
 import { validateEmail } from "@/Utils/ValidateUtil";
 import { LinearGradient } from "expo-linear-gradient";
 import { GetToken } from "@/Utils/TokenUtil";
+
 export default function Index() {
 
   let [Email,SetEmail] = useState('');
   let [Password,SetPassword] = useState('');
- 
   const HandleLogin = async () => {
    
    if (!validateEmail(Email)) {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
       return;
     }
-   if (await LoginAPI(Email,Password))  router.push("/(tabs)/Dashboard");  
+   if (await LoginAPI(Email,Password))  router.replace("/(tabs)/GetDocument");  
   }
 
   return (

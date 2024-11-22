@@ -1,18 +1,23 @@
 import React from 'react';
-import {  MaterialIcons,Ionicons, AntDesign } from '@expo/vector-icons';   
+import {  MaterialIcons,Ionicons} from '@expo/vector-icons';   
 import { Tabs } from 'expo-router';
+import { MyTabBar } from '@/components/CustomItem/MyTabBar';
 
 export default () =>{
   return (
-      <Tabs initialRouteName="Dashboard" screenOptions={{ tabBarShowLabel: false, tabBarInactiveBackgroundColor: '#fff', tabBarActiveTintColor: '#000',headerShown:false }}>
-        <Tabs.Screen
-          name="Dashboard"
+      <Tabs  tabBar={props => <MyTabBar{...props} />} screenOptions={{ tabBarShowLabel: false, tabBarInactiveBackgroundColor: '#fff', tabBarActiveTintColor: '#000',headerShown:false }}>
+       <Tabs.Screen
+          name="GetDocument"
           options={{
             tabBarIcon: ({ focused }) => (
-              <MaterialIcons name="dashboard" size={25} color={focused ? '#1CE238' : '#999'} />
+     
+              <MaterialIcons name="local-shipping" size={25} color={focused ? '#1CE238' : '#999'} />
             ),
+            unmountOnBlur: true
           }}
+          
         />
+
         <Tabs.Screen
           name="Shipping"
           options={{
@@ -20,6 +25,8 @@ export default () =>{
      
               <MaterialIcons name="local-shipping" size={25} color={focused ? '#1CE238' : '#999'} />
             ),
+            unmountOnBlur: true,
+            
           }}
         />
 
@@ -29,6 +36,16 @@ export default () =>{
             tabBarIcon: ({ focused }) => (
               <Ionicons name="notifications" size={25} color={focused ? '#1CE238' : '#999'} />
             ),
+            unmountOnBlur: true
+          }}
+        />
+     <Tabs.Screen
+          name="GoToNotarize"
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Ionicons name="notifications" size={25} color={focused ? '#1CE238' : '#999'} />
+            ),
+            unmountOnBlur: true
           }}
         />
   
