@@ -42,17 +42,15 @@ export default function CameraScreen(){
             text: 'Không',
             style: 'cancel',
           },
-          { text: 'Có', onPress: () => 
+          { text: 'Có', onPress:async () => 
             {
-              UploadBase64Image(photo.uri,ImageShippingid[0].id.toString()) .then(imageUrl => {
+              let url = "";
+              await UploadBase64Image(photo.uri,ImageShippingid[0].id.toString()) .then(imageUrl => {
                 if (imageUrl) {
                   console.log('Image uploaded successfully:');
-
+                  url = imageUrl;
                   //const encodedUrl = imageUrl.replace(/Images\//, "Images%2F");
-                  UpdateURL(Token,ImageShippingid[0].id.toString(),imageUrl)
-                  UpdateOrder(Token,Data.orderId.toString());
-                  UpdateTaskStatusCompleted(Token,Data.taskId.toString());
-                  router.push({pathname: '/(tabs)/Shipping' });
+                  
                   // Use the imageUrl for further operations
                 } else {
                   console.error('Error uploading image');
@@ -61,7 +59,10 @@ export default function CameraScreen(){
               .catch(error => {
                 console.error('Error uploading image:', error);
               });
-              
+              await UpdateURL(Token,ImageShippingid[0].id.toString(),url)
+              await UpdateOrder(Token,Data.orderId.toString());
+              await UpdateTaskStatusCompleted(Token,Data.taskId.toString());
+                router.push({pathname: '/(tabs)/Shipping' });
           }
          },
         ]

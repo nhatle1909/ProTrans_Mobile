@@ -26,9 +26,9 @@ export default function NotarizationDetail2(){
     // Update documentList state when fetched data changes
     setDocumentList(fetchedDocumentList);
   }, [fetchedDocumentList]);
-console.log(documentList)
+
     const FinishTask=async()=>{ 
-      UpdateAssignmentNotarizationStatus(token,item.id)
+     await UpdateAssignmentNotarizationStatus(token,item.id)
       router.replace('/(tabs)/GoToNotarize');
     }
 

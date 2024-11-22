@@ -4,6 +4,7 @@ export interface AssignmentNotarizationModel {
     id: string;
     shipperId: string;
     status: string;
+    fakecode:string
     deadline:  string ; // Adjust the type based on your API's response
   }
 
@@ -21,10 +22,10 @@ export const useAssignmentNotarizations = (Token:string,id:string) => {
           data.map(async (assignment) => {
            
             const dateObject =  new Date(assignment.deadline);
-            
+            const fakeCode = assignment.id.substring(0,8).toUpperCase();
             const formattedDeadline = dateObject.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
             console.log(formattedDeadline);
-            return { ...assignment, deadline: formattedDeadline }; // Merge data
+            return { ...assignment, deadline: formattedDeadline,fakecode:fakeCode }; // Merge data
           })
         );
 

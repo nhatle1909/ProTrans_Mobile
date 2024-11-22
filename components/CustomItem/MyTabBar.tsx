@@ -48,7 +48,7 @@ export function MyTabBar({ state, descriptors, navigation }) {
     {
       id: 1,
       routeName: 'GetDocument',
-      name: 'local-shipping',
+      name: 'dashboard',
       Icon: MaterialIcons,
       size: 32,
     },
@@ -69,7 +69,7 @@ export function MyTabBar({ state, descriptors, navigation }) {
   {
     id: 4,
     routeName: 'GoToNotarize',
-    name: 'notifications',
+    name: 'document-attach',
     Icon: Ionicons,
     size: 32,
   },

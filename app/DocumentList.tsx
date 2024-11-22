@@ -18,9 +18,12 @@ export default function NotarizationTask() {
   const handleShippingPress = (id : string) =>{
     router.push({pathname:"/Camera2",params :{ImageShippingid: id,orderId : Data.orderId,taskId:Data.taskId}})
   }
-  const NavigateBack = () => {
-    UpdateTaskStatusCompleted(Token,Data.taskId.toString())
-    router.push("/(tabs)/Notarization")
+  const NavigateBack = async () => {
+    await UpdateTaskStatusCompleted(Token,Data.taskId.toString())
+    router.replace("/(tabs)/Notarization")
+  }
+  if (data === null || data.length===0){
+    return( NavigateBack())
   }
   if (data !== null){
   return (
@@ -45,11 +48,6 @@ export default function NotarizationTask() {
     </GestureHandlerRootView> 
     </LinearGradient>
   );
-}
-else {
-  return (
- NavigateBack()
-  ) 
 }
 }
 const style = StyleSheet.create({

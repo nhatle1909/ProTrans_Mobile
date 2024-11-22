@@ -33,7 +33,7 @@ export default function NotarizationTask2() {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (       
               <CustomListNotarize
-              id={item.id}
+              id={item.fakecode}
                 status={item.status}
                 deadline={item.deadline}
                 
