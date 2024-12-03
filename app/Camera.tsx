@@ -4,12 +4,14 @@ import { UpdateURL } from '@/Utils/ImageShippingAPI/ImageShippingAPI';
 import { UpdateOrder } from '@/Utils/OrderAPI/OrderAPI';
 import { UpdateTaskStatusCompleted } from '@/Utils/ShippingAPI/ShippingAPI';
 import { GetToken } from '@/Utils/TokenUtil';
+import { CreateTransaction } from '@/Utils/TransactionAPI/TransactionAPI';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Alert, Button, Image, StyleSheet, Text, View } from 'react-native';
-
+import Spinner from 'react-native-loading-spinner-overlay';
+import Toast from 'react-native-toast-message';
 export default function CameraScreen(){
 
     const [permission, requestPermission] = useCameraPermissions();
@@ -17,7 +19,8 @@ export default function CameraScreen(){
     const Data = useLocalSearchParams();
     const Token = GetToken();
     const ImageShippingid = useImageShipping(Token,Data.taskId.toString());
-    console.log(Data.taskId)
+    const [isLoading,setIsLoading] = useState(false);
+    console.log(Data)
     console.log(ImageShippingid)
     const [photo,setPhoto] = useState({
       uri:'',
@@ -42,18 +45,16 @@ export default function CameraScreen(){
             text: 'Không',
             style: 'cancel',
           },
-          { text: 'Có', onPress: () => 
+          { text: 'Có', onPress:async () => 
             {
-              UploadBase64Image(photo.uri,ImageShippingid[0].id.toString()) .then(imageUrl => {
+             
+                
+              let url = "";
+              setIsLoading(true);
+              await UploadBase64Image(photo.uri,ImageShippingid[0].id.toString()) .then(imageUrl => {
                 if (imageUrl) {
                   console.log('Image uploaded successfully:');
-
-                  //const encodedUrl = imageUrl.replace(/Images\//, "Images%2F");
-                  UpdateURL(Token,ImageShippingid[0].id.toString(),imageUrl)
-                  UpdateOrder(Token,Data.orderId.toString());
-                  UpdateTaskStatusCompleted(Token,Data.taskId.toString());
-                  router.push({pathname: '/(tabs)/Shipping' });
-                  // Use the imageUrl for further operations
+                  url = imageUrl;
                 } else {
                   console.error('Error uploading image');
                 }
@@ -61,7 +62,12 @@ export default function CameraScreen(){
               .catch(error => {
                 console.error('Error uploading image:', error);
               });
+              await UpdateTaskStatusCompleted(Token,Data.taskId.toString());      
+              await UpdateURL(Token,ImageShippingid[0].id.toString(),url)           
+            
               
+              setIsLoading(false);
+              router.replace("/(tabs)/Shipping")
           }
          },
         ]
@@ -89,7 +95,8 @@ export default function CameraScreen(){
   
     return (
       <View style={styles.container}>
-        
+        <Toast/>
+       <Spinner visible={isLoading} textContent={'Đang xử lý dữ liệu, vui lòng chờ'} textStyle={{fontSize:16,color:'#fff'}} overlayColor="rgba(0, 0, 0, 0.75)" color="#40B59F" />
         {photo.uri == '' ? 
         <View style={{flex:1}}>
         <CameraView style={styles.camera} facing={'back'} ref={cameraRef} >

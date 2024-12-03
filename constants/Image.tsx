@@ -5,3 +5,4 @@ export const EmailIcon = Asset.fromModule(require('../assets/images/Icons.png'))
 export const passwordIcon = Asset.fromModule(require('../assets/images/key.png')).uri
 export const avatar = Asset.fromModule(require('../assets/images/avatar.png')).uri
 export const greenMarker = Asset.fromModule(require('../assets/images/greenmarker.png')).uri
+export const qr = Asset.fromModule(require('../assets/images/QR.png')).uri

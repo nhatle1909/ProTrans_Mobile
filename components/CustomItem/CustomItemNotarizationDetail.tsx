@@ -56,7 +56,7 @@ export const CustomListDocumentNotarize: React.FC<CustomListItemProps> = ({
           
           <View style={styles.valueContainer}>
               <Text style={{fontSize:13}}>{code}</Text>
-              
+              <Text style={{fontSize:13}}>Số bản công chứng : {numberOfNotarize}</Text>
             </View>
             
           <View style={styles.address}>

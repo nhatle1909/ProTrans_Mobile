@@ -33,9 +33,22 @@
       [
         "expo-font",
         {
-          "fonts": [
-            "./assets/fonts/Quicksand.ttf"
-          ]
+          "fonts": ["./assets/fonts/Blood.otf"]
+        }
+      ],
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsVersion": "11.0.0",
+          "RNMapboxMapsDownloadToken": "sk.eyJ1IjoiY2FkZW56IiwiYSI6ImNtM2U5MW12ODA5cGUya3IzNG90a25zMnoifQ.99nRizDqZJPtwwCCxa1juA"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
         }
       ]
     ],

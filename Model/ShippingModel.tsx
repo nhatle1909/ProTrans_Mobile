@@ -9,6 +9,7 @@ orderId: string;
 status: string;
 //----------
 deadline:  string;
+phoneNumber:string
 address: string;
 orderCode:string; 
 }
@@ -28,18 +29,18 @@ export const useShippingTaskList = (Token:string,id:string) => {
     const fetchData = async () => {
       try {
         const data = await GetShippings(Token, id); // Assuming you have token and id
-   
+        let sortedData = await data.sort((a,b) => new Date(a.deadline) - new Date(b.deadline))
+
         // Iterate through each assignment notarization and fetch order details
         const updatedData = await Promise.all(
-          data.map(async (ShipTask) => {
+          sortedData.map(async (ShipTask) => {
             const order = await GetOrder(Token, ShipTask.orderId);       
-        
-            const dateObject =  new Date(order.deadline);
-            const formattedDeadline = dateObject.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            return { ...ShipTask, deadline: formattedDeadline,orderCode : order.orderCode, address :order.address }; // Merge data
+            const dateObject =  new Date(ShipTask.deadline);
+            return { ...ShipTask, deadline: dateObject.toLocaleDateString('vi-VN'),orderCode : order.orderCode, address :order.address ,phoneNumber:order.phoneNumber }; // Merge data
           })
         );
-        setShippingTaskList(updatedData); // Update state with updated deadlines
+
+        setShippingTaskList(updatedData);// Update state with updated deadlines
       } catch (error) {
       
       }
@@ -54,14 +55,13 @@ export const usePrepareShippingTaskList = (Token:string,id:string) => {
     const fetchData = async () => {
       try {
         const data = await GetPrepareShips(Token, id); // Assuming you have token and id
-     
+        let sortedData = await data.sort((a,b) => new Date(a.deadline) - new Date(b.deadline))
         const updatedData = await Promise.all(
-          data.map(async (ShipTask) => {
+          sortedData.map(async (ShipTask) => {
             const order = await GetOrder(Token, ShipTask.orderId);       
             const agency = await GetAgency(Token,order.agencyId)
-            const dateObject =  new Date(order.deadline);
-            const formattedDeadline = dateObject.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            return { ...ShipTask, deadline: formattedDeadline,orderCode : order.orderCode,agencyaddress :agency.address,agencyName:agency.name }; // Merge data
+            const dateObject =  new Date(ShipTask.deadline);
+            return { ...ShipTask, deadline: dateObject.toLocaleDateString('vi-VN'),orderCode : order.orderCode,agencyaddress :agency.address,agencyName:agency.name }; // Merge data
           })
         );
         setShippingTaskList(updatedData); // Update state with updated deadlines
@@ -82,14 +82,13 @@ export const usePickupList = (Token:string,id:string) => {
     const fetchData = async () => {
       try {
         const data = await GetPickups(Token, id); // Assuming you have token and id
-       
+        let sortedData = await data.sort((a,b) => new Date(a.deadline) - new Date(b.deadline))
         const updatedData = await Promise.all(
-          data.map(async (ShipTask) => {
+          sortedData.map(async (ShipTask) => {
             const order = await GetOrder(Token, ShipTask.orderId);       
          
-            const dateObject =  new Date(order.deadline);
-            const formattedDeadline = dateObject.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            return { ...ShipTask, deadline: formattedDeadline, orderCode : order.orderCode,address :order.address }; // Merge data
+            const dateObject =  new Date(ShipTask.deadline);
+            return { ...ShipTask, deadline: dateObject.toLocaleDateString('vi-VN'), orderCode : order.orderCode,address :order.address }; // Merge data
           })
         );
         setShippingTaskList(updatedData); // Update state with updated deadlines

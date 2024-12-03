@@ -1,5 +1,8 @@
 import {Header} from "@/components/Header";
+import { qr } from "@/constants/Image";
+import { useAccount, useAccountPersonal } from "@/Model/AccountModel";
 import { GetOrderData } from "@/Model/Order";
+import { GetAccount } from "@/Utils/AccountAPI/AccountAPI";
 import { DecodeToken, GetToken } from "@/Utils/TokenUtil";
 import { formatPrice } from "@/Utils/ValidateUtil";
 import { Button,View } from "@ant-design/react-native";
@@ -7,8 +10,9 @@ import { AntDesign, FontAwesome, FontAwesome5, FontAwesome6, SimpleLineIcons } f
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { Animated, StyleSheet, TouchableOpacity,Text } from "react-native";
+import { Animated, StyleSheet, TouchableOpacity,Text, Image } from "react-native";
 import { GestureHandlerRootView, ScrollView,Switch } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 export default function MainScreen(){
 const Token = GetToken();
 const data = DecodeToken();
@@ -17,6 +21,7 @@ const [isEnabled, setIsEnabled] = useState(false);
 const [PaymentMethod,setPaymentMethod] = useState("Tiền mặt")
 const fadeAnim = useRef(new Animated.Value(0)).current;
 const order = GetOrderData(Token,Data.orderId.toString());
+const account = useAccount(Token,Data.phoneNumber.toString())
 let price = "";
 
 if ( order?.totalPrice !== undefined) {
@@ -76,13 +81,30 @@ useEffect(() => {
 
 
 const navigate = () => {
-    router.replace({pathname:"/Camera",params:{taskId:Data.taskId,orderId:Data.orderId}})
+  if (account === null || account === undefined) {
+    Toast.show({
+
+      type: 'error', // You can use 'success', 'error', 'info'
+      text1: `Dữ liệu chưa tải hoàn thành, xin vui lòng đợi và thử lại sau`,
+      text1Style:{fontSize:13,color:'#40B59F'},
+      position: 'top',
+
+      topOffset: 20,
+
+      visibilityTime: 3000, // Toast will disappear after 3 seconds
+
+    });
+      return;
+  }
+  else 
+    router.push({pathname:"/Camera",params:{taskId:Data.taskId,orderId:Data.orderId,accountId:account?.id}})
 }
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={Style.background}>
-    
+  
 <GestureHandlerRootView>
+<Toast></Toast>
     <View style={[Style.container]}>
     <Animated.View style={[Style.infoPanel,{ opacity: fadeAnim }]}>
         
@@ -128,7 +150,7 @@ const navigate = () => {
         </TouchableOpacity>
         </View> {selectedOption === 'QR' && (
         <Animated.View style={[styles.qrContainer, { opacity: qrFadeAnim }]}>
-          <FontAwesome5 name="qrcode" size={50} color="black" />
+        <Image source={{uri : qr}} style={{width:150,height:150}}resizeMode="contain"/>
           <Animated.Text style={[styles.qrText, { opacity: fadeAnim2 }]}>
             Scan to Pay
           </Animated.Text>

@@ -6,12 +6,14 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Alert, Button, Image, StyleSheet, Text, View } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 export default function CameraScreen(){
     const Data = useLocalSearchParams();
     const [permission, requestPermission] = useCameraPermissions();
     const cameraRef = useRef(null);
     const Token = GetToken();
     const DataToken = DecodeToken();
+    const [isLoading,setIsLoading] = useState(false);
     const [photo,setPhoto] = useState({
       uri:'',
       base64:''
@@ -35,16 +37,16 @@ export default function CameraScreen(){
             text: 'Không',
             style: 'cancel',
           },
-          { text: 'Có', onPress: () => 
+          { text: 'Có', onPress: async () => 
             {
-              UploadBase64Image(photo.uri,Data.ImageShippingid.toString()) .then(imageUrl => {
+              let url = "";
+              setIsLoading(true);
+              await UploadBase64Image(photo.uri,Data.ImageShippingid.toString()) .then(imageUrl => {
                 if (imageUrl) {
                   console.log('Image uploaded successfully:');
-
+                  url = imageUrl;
                   //const encodedUrl = imageUrl.replace(/Images\//, "Images%2F");
-                  UpdateURL(Token,Data.ImageShippingid.toString(),imageUrl)
-
-                  router.push({pathname: '/DocumentList', params:{orderId : Data.orderId,taskId:Data.taskId}});
+               ;
                   // Use the imageUrl for further operations
                 } else {
                   console.error('Error uploading image');
@@ -54,7 +56,9 @@ export default function CameraScreen(){
                 console.error('Error uploading image:', error);
               });
                
-               
+              await UpdateURL(Token,Data.ImageShippingid.toString(),url)
+              setIsLoading(false)
+              router.push({pathname: '/DocumentList', params:{orderId : Data.orderId,taskId:Data.taskId}})
          },
         }
         ]
@@ -82,7 +86,7 @@ export default function CameraScreen(){
   
     return (
       <View style={styles.container}>
-        
+         <Spinner visible={isLoading} textContent={'Đang xử lý dữ liệu, vui lòng chờ'} textStyle={{fontSize:16,color:'#fff'}} overlayColor="rgba(0, 0, 0, 0.75)" color="#40B59F" />
         {photo.uri == '' ? 
         <View style={{flex:1}}>
         <CameraView style={styles.camera} facing={'back'} ref={cameraRef} >

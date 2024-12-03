@@ -56,7 +56,7 @@ export const CustomListDocument: React.FC<CustomListItemProps> = ({
           
           <View style={styles.valueContainer}>
               <Text style={{fontSize:13}}>{code}</Text>
-              
+              <Text style={{fontSize:14}}>Số trang : {pageNumber}</Text>
             </View>
             
           <View style={styles.address}>

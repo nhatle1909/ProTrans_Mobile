@@ -1,5 +1,5 @@
-import React from 'react';
-import {CustomListItem} from "@/components/CustomItem/CustomItemList";
+import React, { useEffect } from 'react';
+
 import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, Text } from 'react-native';
@@ -11,29 +11,90 @@ import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
 
 import { useAssignmentNotarizations } from '@/Model/AssignmentNotarizationModel';
 import { CustomListNotarize } from '@/components/CustomItem/CustomItemNotarize';
+import Toast from 'react-native-toast-message';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 
 export default function NotarizationTask2() {
   const Token = GetToken();
   const DataToken = DecodeToken();
   const data = useAssignmentNotarizations(Token,DataToken.Id);
+
+  const hubConnection = new HubConnectionBuilder()
+  .withUrl('https://protrans.azurewebsites.net/notificationHub')
+  .withAutomaticReconnect()
+  .build();
+  useEffect(() => {
+    const startConnection = async () => {
+        try {
+          hubConnection.on(`${DataToken.Id}`, async (title,message,author) => {
+            
+            Toast.show({
+
+              type: 'success', // You can use 'success', 'error', 'info'
+        
+              text1: `${title}`,
+        
+              text2: `${message}`,
+              
+              text1Style:{fontSize:13,marginTop:-10,color:'#40B59F'},
+              text2Style:{fontSize:12,flexWrap:'wrap'},
+              position: 'top',
+        
+              topOffset: 20,
+        
+              visibilityTime: 3000, // Toast will disappear after 3 seconds
+        
+            });
+            // Handle the notification here, e.g., display a notification, update UI, etc.
+        });
+            hubConnection.start()
+            .then(() => console.log('Connected'))
+             .catch(error => console.error(error));
+
+            // Subscribe to a specific method
+          
+        } catch (error) {
+            console.error('Error connecting to SignalR Hub:', error);
+        }
+    };
+
+    startConnection();
+    return () => {
+        console.log("Stopped")
+        hubConnection.stop();
+    };
+}, []);
+
   console.log(data);
     const handleShippingPress = (id : string,address : string) =>{
       router.push({pathname:"/NotarizationDetail",params :{id: id,address:  address}})
     }
-  
+    if (data === null || data.length===0){
+      return (
+        <LinearGradient colors={['#40B59F', '#fff']}
+      locations={[0.41, 1]} style={style.container}>
+        <Header username={DataToken.Username} tabName = 'Danh sách đơn hàng cần giao'></Header>
+        <Toast></Toast>
+        <Text style={style.title}>Hiện không có công việc</Text>
+        </LinearGradient>
+      ) 
+    }
   if (data !== null){
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={style.container}>
       <Header username={DataToken.Username} tabName = 'Danh sách tài liệu cần nhận'></Header>
+      <Toast></Toast>
     <GestureHandlerRootView >
+  
      <SafeAreaView style={style.itemContainer}>
+     <Text style={style.title1}>Đơn hàng cần công chứng</Text>
         <FlatList
           data={data}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (       
               <CustomListNotarize
-              id={item.id}
+              id={item.fakecode}
                 status={item.status}
                 deadline={item.deadline}
                 
@@ -45,15 +106,7 @@ export default function NotarizationTask2() {
     </LinearGradient>
   );
 }
-else {
-  return (
-    <LinearGradient colors={['#40B59F', '#fff']}
-  locations={[0.41, 1]} style={style.container}>
-    <Header username={DataToken.Username} tabName = 'Danh sách công việc'></Header>
-    <Text style={style.title}>Hiện không có công việc</Text>
-    </LinearGradient>
-  ) 
-}
+
 }
 const style = StyleSheet.create({
   container:{
@@ -99,5 +152,11 @@ const style = StyleSheet.create({
     fontSize:20,
     textAlign:'center',
     marginTop:5
+  },  title1:{
+    textAlign:'center',
+    fontSize:20,
+    fontWeight:'bold',
+    padding:5,
+    marginBottom:5
   }
 });

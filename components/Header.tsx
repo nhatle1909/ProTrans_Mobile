@@ -1,6 +1,7 @@
 import { avatar } from "@/constants/Image";
+import { Logout } from "@/Utils/Auth/LogoutUtil";
 import { Text,View, } from "@ant-design/react-native";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect,useState } from "react";
 import { StyleSheet,Image } from "react-native";
@@ -12,22 +13,11 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ username,tabName })  => {
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
-    return () => clearInterval(intervalId);   
-
-  }, []);
-
-  const formattedTime = currentTime.toLocaleTimeString();   
-
 
   return (
     <View style={styles.header}>
         <View style={styles.notif}>
-      <FontAwesome name="user-circle" size={30} color={'#fff'} onPress={()=>router.push('/Notification')} />
+      <FontAwesome name="user-circle" size={30} color={'#fff'} onPress={()=>router.push('/Profile')} />
       </View>
         <View style = {styles.tabname}>
        
@@ -36,6 +26,7 @@ export const Header: React.FC<HeaderProps> = ({ username,tabName })  => {
       </View>
       <View style={[styles.notif]}>
       <Ionicons name="notifications" size={30} color={'#fff'} onPress={()=>router.push('/Notification')} />
+      <MaterialCommunityIcons  style={{marginLeft:20}}name="logout" size={30} color="#fff" onPress={()=> Logout()} />
       </View>
     </View>
   );
@@ -62,8 +53,8 @@ const styles = StyleSheet.create({
     color:'white'
   },
   timeText: {
-    fontSize: 20,
-   
+    fontSize: 18,
+    fontWeight:'bold',
     color:'white',
     textAlign:'left',
  
@@ -77,6 +68,7 @@ const styles = StyleSheet.create({
   notif:{
     alignSelf:'center',
     padding:5,
+    flexDirection:'row'
   }
 });
 

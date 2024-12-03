@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { decode } from "@googlemaps/polyline-codec";
+import { Position } from "@rnmapbox/maps/lib/typescript/src/types/Position";
 export interface Coordinate{
   latitude:number;
   longitude:number;
@@ -29,17 +30,13 @@ export const ConvertAddress=  (name:string ) => {
 }
 export const CreateRoute= (lat2:number,long2:number,lat:number,long:number) => {
 
-  const [Routes,SetRoutes] = useState<Coordinate[]>([]);
+  const [Routes,SetRoutes] = useState<Position[]>([]);
   if (lat >0){
   const fetchData = async () => {
       let response = await fetch(`https://rsapi.goong.io/Direction?origin=${lat2},${long2}&destination=${lat},${long}&api_key=20C8fOYZrkTRtDBnIPeTFT5nRQXhQr7rKNlm4p9b`).then(response => response.json())
-      .then(data => {
-       const listStep= decode(data.routes[0].overview_polyline.points);
-       const firstCoor = {latitude : origin.latitude,longitude:origin.longitude}
-       const newList = [firstCoor,...listStep.map(element => ({
-          latitude : element[0],
-          longitude : element[1]
-        }))]
+      .then(async data => {
+       const listStep= await decode(data.routes[0].overview_polyline.points);
+        const newList = await listStep.map(([a,b]) => [b,a])
         SetRoutes(newList);
       })
 }
