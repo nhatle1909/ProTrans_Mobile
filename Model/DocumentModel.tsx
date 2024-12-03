@@ -24,6 +24,10 @@ export const useDocumentList = (Token:string,id:string) => {
         try {
           const data = await GetDocuments(Token, id); // Assuming you have token and id
           // Iterate through each assignment notarization and fetch order details
+          if (data === null) {
+            setDocumentList(data)
+            return DocumentList;
+          }
           const updatedData = await Promise.all(
             data.map(async (item) => {
               const firstLanguage = await GetLanguage(Token, item.document.firstLanguageId);

@@ -23,7 +23,7 @@ export const useNotification = (Token:string,id:string) =>{
               
                 const dateObject =  new Date(Notification.notificationTime);
                 const formattedDeadline = dateObject.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                return { ...Notification, notificationTime: formattedDeadline, orderCode : order.orderCode,address :order.address }; // Merge data
+                return { ...Notification, notificationTime: formattedDeadline }; // Merge data
               })
             );
             setNotification(updatedData); 

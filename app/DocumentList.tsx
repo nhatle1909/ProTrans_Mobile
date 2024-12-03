@@ -22,9 +22,6 @@ export default function NotarizationTask() {
     await UpdateTaskStatusCompleted(Token,Data.taskId.toString())
     router.replace("/(tabs)/Notarization")
   }
-  if (data === null || data.length===0){
-    return( NavigateBack())
-  }
   if (data !== null){
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
@@ -48,6 +45,9 @@ export default function NotarizationTask() {
     </GestureHandlerRootView> 
     </LinearGradient>
   );
+}
+else {
+  return( NavigateBack())
 }
 }
 const style = StyleSheet.create({

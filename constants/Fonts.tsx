@@ -1,0 +1,1 @@
+export const customFonts = { 'CustomFont': require('../assets/fonts/Blood.otf')}

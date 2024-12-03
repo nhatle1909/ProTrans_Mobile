@@ -7,6 +7,7 @@ import { EmailIcon, logo, passwordIcon } from "@/constants/Image";
 import { validateEmail } from "@/Utils/ValidateUtil";
 import { LinearGradient } from "expo-linear-gradient";
 import { GetToken } from "@/Utils/TokenUtil";
+import Toast from "react-native-toast-message";
 
 export default function Index() {
 
@@ -15,15 +16,47 @@ export default function Index() {
   const HandleLogin = async () => {
    
    if (!validateEmail(Email)) {
-      Alert.alert('Invalid Email', 'Please enter a valid email address.');
+    Toast.show({
+
+      type: 'error', // You can use 'success', 'error', 'info'
+      text1: `Sai định dạng email, email phải chứa kí tự @`,
+      text1Style:{fontSize:13,color:'#40B59F'},
+      position: 'top',
+
+      topOffset: 20,
+
+      visibilityTime: 3000, // Toast will disappear after 3 seconds
+
+    });
       return;
     }
-   if (await LoginAPI(Email,Password))  router.replace("/(tabs)/GetDocument");  
+   if (await LoginAPI(Email,Password)) 
+    { 
+
+      router.replace("/(tabs)/GetDocument")
+
+    } else {
+      Toast.show({
+
+        type: 'success', // You can use 'success', 'error', 'info'
+        text1: `Đăng nhập thất bại, xin vui lòng đăng nhập lại`,
+        text1Style:{fontSize:13,color:'#40B59F'},
+        position: "top",
+  
+        topOffset: 30,
+  
+        visibilityTime: 2000, // Toast will disappear after 3 seconds
+  
+      });
+      SetPassword("");
+    }  
+   
   }
 
   return (
     <LinearGradient   style={style.container}  colors={['#40B59F', '#fff']}
     locations={[0.41, 1]}>
+           <Toast/>
       <Form style={style.form}>
         <View>
           <Image source={{uri : logo}} style={style.image} resizeMode="contain"/>

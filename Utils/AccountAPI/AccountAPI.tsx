@@ -11,10 +11,25 @@ export const GetAccount = async (token : string,id : string) =>{
           }
         });
       if (response.status == 200)
-      return response.data.data;
+      return response.data.data.id;
       if (response.status == 401) router.replace("/")
       } catch (error) {
         console.error('Error Calling D:', error);
         return false;
       }
+}
+export const GetAccountById = async (token : string,id : string) =>{
+  try {
+      const response = await client.get('Account/'+ id, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    if (response.status == 200)
+    return response.data.data;
+    if (response.status == 401) router.replace("/")
+    } catch (error) {
+      console.error('Error Calling D:', error);
+      return false;
+    }
 }

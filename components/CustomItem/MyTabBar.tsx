@@ -1,4 +1,4 @@
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View,Animated } from "react-native";
 
@@ -62,8 +62,8 @@ export function MyTabBar({ state, descriptors, navigation }) {
   {
     id: 3,
     routeName: 'Notarization',
-    name: 'notifications',
-    Icon: Ionicons,
+    name: 'documents',
+    Icon: Entypo,
     size: 32,
   },
   {
@@ -111,7 +111,7 @@ export function MyTabBar({ state, descriptors, navigation }) {
           const iconColor = isFocused ? '#40B59F' : '#999'; 
           return (
             <Animated.View
-            style={[style.item, { transform: [{ scale }], opacity }]}
+            style={[style.item, isFocused ? { transform: [{ scale }], opacity } : {}]}
           >
             <TouchableOpacity
                  key={route.name}

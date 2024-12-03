@@ -31,3 +31,18 @@ export const UpdateAssignmentNotarizationStatus = async(token:string,id:string) 
     return false;
   }
 }
+export const UpdateDocumentStatusNotarization = async(token:string,id:string) => {
+  try {
+    const response = await client.put('NotarizationDetail/'+ id, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  if (response.status == 200)
+  return response.data.data;
+  if (response.status == 401) router.replace("/")
+  } catch (error) {
+    console.error('Error Calling: Nota', error);
+    return false;
+  }
+}

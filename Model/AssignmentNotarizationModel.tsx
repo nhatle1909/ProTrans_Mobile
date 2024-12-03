@@ -16,16 +16,14 @@ export const useAssignmentNotarizations = (Token:string,id:string) => {
       try {
         const data = await GetAssignmentNotarizations(Token, id); // Assuming you have token and id
        
-    
+        let sortedData = await data.sort((a,b) => new Date(a.deadline) - new Date(b.deadline))
         // Iterate through each assignment notarization and fetch order details
         const updatedData = await Promise.all(
-          data.map(async (assignment) => {
+          sortedData.map(async (assignment) => {
            
             const dateObject =  new Date(assignment.deadline);
             const fakeCode = assignment.id.substring(0,8).toUpperCase();
-            const formattedDeadline = dateObject.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            console.log(formattedDeadline);
-            return { ...assignment, deadline: formattedDeadline,fakecode:fakeCode }; // Merge data
+            return { ...assignment, deadline: dateObject.toLocaleDateString('vi-VN'),fakecode:fakeCode }; // Merge data
           })
         );
 

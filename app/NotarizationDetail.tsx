@@ -1,7 +1,7 @@
 import { CustomListDocumentNotarize } from "@/components/CustomItem/CustomItemNotarizationDetail";
 import {Header} from "@/components/Header";
 import { NotarizationDetail, useDocumentList2 } from "@/Model/NotarizationDetailModel";
-import { UpdateAssignmentNotarizationStatus } from "@/Utils/ANAPI/AssignmentNotarizationAPI";
+import { UpdateAssignmentNotarizationStatus, UpdateDocumentStatusNotarization } from "@/Utils/ANAPI/AssignmentNotarizationAPI";
 import { DecodeToken, GetToken } from "@/Utils/TokenUtil"
 import { Button, View } from "@ant-design/react-native";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
@@ -29,7 +29,8 @@ export default function NotarizationDetail2(){
 
     const FinishTask=async()=>{ 
      await UpdateAssignmentNotarizationStatus(token,item.id)
-      router.replace('/(tabs)/GoToNotarize');
+     await UpdateDocumentStatusNotarization(token,item.id)
+     router.replace('/(tabs)/GoToNotarize');
     }
 
     return(
@@ -38,7 +39,7 @@ export default function NotarizationDetail2(){
         locations={[0.41, 1]}>
              <Header username={data.Username} tabName="Danh sách tài liệu cần công chứng"></Header>
       
-             <GestureHandlerRootView >
+             <GestureHandlerRootView>
      <SafeAreaView style={style.itemContainer}>
      {documentList ? (
         <FlatList
@@ -46,11 +47,10 @@ export default function NotarizationDetail2(){
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (       
               <CustomListDocumentNotarize
-              
                 code={item.code}
                 lan1={item.firstLanguage}
                 lan2={item.secondLanguage}
-                numberOfNotarize=""
+                numberOfNotarize={item.numberOfNotarizedCopies.toString()}
                 onPress={()=>{}}/> 
               )}
       />
@@ -61,8 +61,8 @@ export default function NotarizationDetail2(){
       </SafeAreaView>
     </GestureHandlerRootView> 
       <View style={style.buttonPanel}>
-           <Button style={style.btn} onPress={FinishTask}>Hoàn thành</Button>
-        <Button style={style.btn} onPress={()=>router.replace("/(tabs)/GoToNotarize")}> Quay lại</Button>
+      <Button style={[style.btn,{marginLeft:'7%'}]} onPress={()=>router.replace("/(tabs)/Notarization")}> Quay lại</Button>
+      <Button style={[style.btn,{marginRight:'7%', backgroundColor:'green'}]}onPress={()=>FinishTask()}><Text style={{color:'#fff',fontSize:16}}>Hoàn thành</Text></Button>
       </View>
      
         </LinearGradient>
@@ -132,6 +132,7 @@ const style = StyleSheet.create({
         height:45,
         marginTop:15,
         marginHorizontal:'5%',
+        justifyContent:'center'
       },
       Title:{
         fontSize:19,

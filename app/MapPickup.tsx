@@ -11,6 +11,8 @@ import { GetOrderData } from '../Model/Order';
 import  BottomSheet,{ BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import * as Location from 'expo-location';
 import { formatPrice } from '@/Utils/ValidateUtil';
+import MapboxGL, { PointAnnotation } from "@rnmapbox/maps"
+MapboxGL.setAccessToken("sk.eyJ1IjoiY2FkZW56IiwiYSI6ImNtM2U5MW12ODA5cGUya3IzNG90a25zMnoifQ.99nRizDqZJPtwwCCxa1juA")
 export default function Map(){
   const TokenId = GetToken();
   const snapPoints = useMemo(() => ['60%','100%'],[])
@@ -63,17 +65,43 @@ export default function Map(){
     const navigation = () =>{
         router.push({pathname:"/DocumentList",params:{orderId:Data.orderId,taskId:Data.taskId}})
     }
+
+    const feature: GeoJSON.Feature<GeoJSON.LineString> = {
+      type: 'Feature',
+      geometry: {
+          type: 'LineString',
+          coordinates: routes
+      },
+      properties: {}, // Add an empty properties object
+  };
     return (
       <View style={Style.container}>  
 
-      <MapView 
-      style={Style.map}
-      initialRegion={region}>
-    <Marker coordinate={origin}/>
-      <Marker coordinate={DestinationCoor}  pinColor={'green'}/>
-      <Polyline coordinates={routes} strokeColor='blue' strokeWidth={2}
-     />
-   </MapView>
+<MapboxGL.MapView style={{ flex: 1 }}>
+<MapboxGL.Camera zoomLevel={16} centerCoordinate={[origin.longitude,origin.latitude]}/>
+<MapboxGL.PointAnnotation
+        children={<></>}
+        coordinate={[origin.longitude,origin.latitude]}
+        id='Origin'
+        title="Vị trí hiện tại"
+      />
+     <MapboxGL.PointAnnotation
+        children={<></>}
+        coordinate={[DestinationCoor.longitude,DestinationCoor.latitude]}
+        id='Destination'
+        title="Điểm đến"
+      />
+  <MapboxGL.ShapeSource  id="polyline-source" shape={feature}>
+            <MapboxGL.LineLayer
+              id="routerLine01"
+              style={{
+                lineColor: '#FA9E14',
+                lineWidth: 4,
+              }}
+            />
+          </MapboxGL.ShapeSource>
+    </MapboxGL.MapView> 
+
 
 <GestureHandlerRootView style ={{   zIndex:2,
         position:'absolute',
@@ -135,7 +163,7 @@ export default function Map(){
           <Text style={[Style.text,{textAlign:'right',marginRight:10}]}>{data?.deadline}</Text>
           </View>
           <View style={Style.item}>
-          <FontAwesome6 style={Style.icon} name="calendar-times" size={25} color="black" />
+          <FontAwesome style={Style.icon} name="clipboard" size={25} color="black" />
           <Text style={[Style.text,{textAlign:'left',marginRight:10}]}>Trạng thái</Text>
           <Text style={[Style.text,{textAlign:'right',marginRight:10}]}>Đang vận chuyển</Text>
           </View>
@@ -145,7 +173,7 @@ export default function Map(){
         
       <View style={[Style.item,{}]}>
           <FontAwesome5 style={Style.icon} name="money-bill" size={25} color="green" />
-              <Text style={[Style.text,{textAlign:'left',marginRight:10}]}>Trạng thái</Text>
+              <Text style={[Style.text,{textAlign:'left',marginRight:10}]}>Tổng tiền</Text>
           <Text style={[Style.text,{textAlign:'right',marginRight:15}]}>{price}</Text>
           </View>
       </View>

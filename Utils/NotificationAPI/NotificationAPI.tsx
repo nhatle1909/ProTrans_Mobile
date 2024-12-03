@@ -18,3 +18,20 @@ export const GetNotification = async (token : string,id : string) =>{
         return false;
       }
 }
+
+export const PostNotification = async (token : string,id : string) =>{
+  try {
+      const response = await client.post('Notification/'+ id, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+        }
+      });
+    if (response.status == 200)
+    return response.data.data;
+    if (response.status == 401) router.replace("/")
+    } catch (error) {
+      console.error('Error Calling D:', error);
+      return false;
+    }
+}

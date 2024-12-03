@@ -57,7 +57,7 @@ export const CustomListNotarize: React.FC<CustomListItemProps> = ({
               <Text style={{fontSize:13}}>Đang công chứng</Text>
             </View>
           <View style={[styles.address,{ paddingBottom:5,borderBottomWidth:1,}]}>
-          <Text style={styles.label}> Mã công chứng</Text>
+          <Text style={styles.label}> Mã công việc</Text>
               <Text style={styles.label}>{id}</Text>
          
             </View>
