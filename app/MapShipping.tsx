@@ -12,6 +12,7 @@ import  BottomSheet,{ BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import * as Location from 'expo-location';
 import { formatPrice } from '@/Utils/ValidateUtil';
 import MapboxGL, { PointAnnotation } from "@rnmapbox/maps"
+import Toast from 'react-native-toast-message';
 MapboxGL.setAccessToken("sk.eyJ1IjoiY2FkZW56IiwiYSI6ImNtM2U5MW12ODA5cGUya3IzNG90a25zMnoifQ.99nRizDqZJPtwwCCxa1juA")
 export default function Map(){
   const TokenId = GetToken();
@@ -64,6 +65,22 @@ export default function Map(){
       price = formatPrice(data.totalPrice);
     }
     const navigation = () =>{
+      if (Data.orderId === null || Data.orderId === undefined || Data.phoneNumber || Data.phoneNumber === undefined ||Data.taskId === null || Data.taskId === undefined) {
+        Toast.show({
+    
+          type: 'error', // You can use 'success', 'error', 'info'
+          text1: `Dữ liệu chưa tải hoàn thành, xin vui lòng đợi và thử lại sau`,
+          text1Style:{fontSize:13,color:'#40B59F'},
+          position: 'top',
+    
+          topOffset: 20,
+    
+          visibilityTime: 3000, // Toast will disappear after 3 seconds
+    
+        });
+          return;
+      }
+      else 
         router.push({pathname:"/Payment",params:{taskId:Data.taskId,orderId:Data.orderId,phoneNumber:Data.phoneNumber}})
     }
 
@@ -77,7 +94,7 @@ export default function Map(){
   };
     return (
       <View style={Style.container}>  
-
+<Toast></Toast>
 <MapboxGL.MapView style={{ flex: 1 }}>
 <MapboxGL.Camera zoomLevel={16} centerCoordinate={[origin.longitude,origin.latitude]}/>
 <MapboxGL.PointAnnotation

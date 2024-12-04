@@ -81,7 +81,7 @@ useEffect(() => {
 
 
 const navigate = () => {
-  if (account === null || account === undefined) {
+  if (account === null || account === undefined || order === null || order === undefined) {
     Toast.show({
 
       type: 'error', // You can use 'success', 'error', 'info'
