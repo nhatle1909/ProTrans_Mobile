@@ -9,6 +9,7 @@ import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
 import { useDocumentList } from '@/Model/DocumentModel';
 import {CustomListDocument} from '@/components/CustomItem/CustomItemDocument';
 import { UpdateTaskStatusCompleted } from '@/Utils/ShippingAPI/ShippingAPI';
+import { PostNotificationPickup } from '@/Utils/NotificationAPI/NotificationAPI';
 
 export default function NotarizationTask() {
   const Token = GetToken();
@@ -20,6 +21,7 @@ export default function NotarizationTask() {
   }
   const NavigateBack = async () => {
     await UpdateTaskStatusCompleted(Token,Data.taskId.toString())
+    await PostNotificationPickup(Token,"ce5bac33-050a-4f1a-a3e6-7e1f84e25d48",DataToken.Username,Data.orderCode)
     router.replace("/(tabs)/Notarization")
   }
   if (data !== null){

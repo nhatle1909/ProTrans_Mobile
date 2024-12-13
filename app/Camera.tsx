@@ -1,9 +1,10 @@
 import { useImageShipping } from '@/Model/ImageShippingModel';
 import { UploadBase64Image } from '@/Utils/FirebaseUtil';
 import { UpdateURL } from '@/Utils/ImageShippingAPI/ImageShippingAPI';
+import { PostNotification } from '@/Utils/NotificationAPI/NotificationAPI';
 import { UpdateOrder } from '@/Utils/OrderAPI/OrderAPI';
 import { UpdateTaskStatusCompleted } from '@/Utils/ShippingAPI/ShippingAPI';
-import { GetToken } from '@/Utils/TokenUtil';
+import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
 import { CreateTransaction } from '@/Utils/TransactionAPI/TransactionAPI';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -18,6 +19,7 @@ export default function CameraScreen(){
     const cameraRef = useRef(null);
     const Data = useLocalSearchParams();
     const Token = GetToken();
+    const DataToken = DecodeToken();
     const ImageShippingid = useImageShipping(Token,Data.taskId.toString());
     const [isLoading,setIsLoading] = useState(false);
     console.log(Data)
@@ -64,7 +66,7 @@ export default function CameraScreen(){
               });
               await UpdateTaskStatusCompleted(Token,Data.taskId.toString());      
               await UpdateURL(Token,ImageShippingid[0].id.toString(),url)           
-            
+              await PostNotification(Token,"ce5bac33-050a-4f1a-a3e6-7e1f84e25d48",DataToken.Username,Data.orderCode.toString())
               
               setIsLoading(false);
               router.replace("/(tabs)/Shipping")
