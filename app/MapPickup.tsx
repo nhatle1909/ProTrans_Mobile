@@ -63,7 +63,7 @@ export default function Map(){
       price = formatPrice(data.totalPrice);
     }
     const navigation = () =>{
-        router.push({pathname:"/DocumentList",params:{orderId:Data.orderId,taskId:Data.taskId}})
+        router.push({pathname:"/DocumentList",params:{orderId:Data.orderId,taskId:Data.taskId,orderCode:data?.orderCode}})
     }
 
     const feature: GeoJSON.Feature<GeoJSON.LineString> = {

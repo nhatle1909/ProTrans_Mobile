@@ -2,6 +2,7 @@ import { CustomListDocumentNotarize } from "@/components/CustomItem/CustomItemNo
 import {Header} from "@/components/Header";
 import { NotarizationDetail, useDocumentList2 } from "@/Model/NotarizationDetailModel";
 import { UpdateAssignmentNotarizationStatus, UpdateDocumentStatusNotarization } from "@/Utils/ANAPI/AssignmentNotarizationAPI";
+import { PostNotification, PostNotificationNota } from "@/Utils/NotificationAPI/NotificationAPI";
 import { DecodeToken, GetToken } from "@/Utils/TokenUtil"
 import { Button, View } from "@ant-design/react-native";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
@@ -30,6 +31,7 @@ export default function NotarizationDetail2(){
     const FinishTask=async()=>{ 
      await UpdateAssignmentNotarizationStatus(token,item.id)
      await UpdateDocumentStatusNotarization(token,item.id)
+     await PostNotificationNota(token,"ce5bac33-050a-4f1a-a3e6-7e1f84e25d48",data.Username,item.fakecode.toString())
      router.replace('/(tabs)/GoToNotarize');
     }
 

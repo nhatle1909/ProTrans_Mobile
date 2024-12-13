@@ -65,7 +65,7 @@ export default function Map(){
       price = formatPrice(data.totalPrice);
     }
     const navigation = () =>{
-      if (Data.orderId === null || Data.orderId === undefined || Data.phoneNumber || Data.phoneNumber === undefined ||Data.taskId === null || Data.taskId === undefined) {
+      if (Data.orderId === null || Data.orderId === undefined || Data.phoneNumber ===null || Data.phoneNumber === undefined ||Data.taskId === null || Data.taskId === undefined) {
         Toast.show({
     
           type: 'error', // You can use 'success', 'error', 'info'
@@ -197,7 +197,7 @@ export default function Map(){
           </View>
       </View>
       <View style={Style.buttonPanel}>    
-         <Button style={[Style.btn,{marginLeft:'7%'}]} onPress={()=>router.replace("/(tabs)/Notarization")}> Quay lại</Button>
+         <Button style={[Style.btn,{marginLeft:'7%'}]} onPress={()=>router.replace("/(tabs)/Shipping")}> Quay lại</Button>
          <Button style={[Style.btn,{marginRight:'7%', backgroundColor:'green'}]}onPress={()=>navigation()}><Text style={{color:'#fff',fontSize:16}}>Hoàn thành</Text></Button>
       </View>
       </View>

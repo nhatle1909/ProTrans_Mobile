@@ -66,8 +66,8 @@ export default function NotarizationTask2() {
 }, []);
 
   console.log(data);
-    const handleShippingPress = (id : string,address : string) =>{
-      router.push({pathname:"/NotarizationDetail",params :{id: id,address:  address}})
+    const handleShippingPress = (id : string,address : string,fakecode:string) =>{
+      router.push({pathname:"/NotarizationDetail",params :{id: id,address:  address,fakecode:fakecode}})
     }
     if (data === null || data.length===0){
       return (
@@ -98,7 +98,7 @@ export default function NotarizationTask2() {
                 status={item.status}
                 deadline={item.deadline}
                 
-                  onPress={()=> {handleShippingPress(item.id,item.status)}} /> 
+                  onPress={()=> {handleShippingPress(item.id,item.status,item.fakecode)}} /> 
               )}
       />
       </SafeAreaView>

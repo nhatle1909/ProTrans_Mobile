@@ -97,7 +97,7 @@ const navigate = () => {
       return;
   }
   else 
-    router.push({pathname:"/Camera",params:{taskId:Data.taskId,orderId:Data.orderId,accountId:account?.id}})
+    router.push({pathname:"/Camera",params:{taskId:Data.taskId,orderId:Data.orderId,accountId:account?.id,orderCode:order.orderCode}})
 }
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
