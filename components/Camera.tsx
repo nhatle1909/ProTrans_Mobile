@@ -3,6 +3,7 @@ import { UploadBase64Image } from '@/Utils/FirebaseUtil';
 import { UpdateURL } from '@/Utils/ImageShippingAPI/ImageShippingAPI';
 import { PostNotification } from '@/Utils/NotificationAPI/NotificationAPI';
 import { UpdateOrder } from '@/Utils/OrderAPI/OrderAPI';
+import { SendMail } from '@/Utils/SendMailAPI/SendMailAPI';
 import { UpdateTaskStatusCompleted } from '@/Utils/ShippingAPI/ShippingAPI';
 import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
 import { CreateTransaction } from '@/Utils/TransactionAPI/TransactionAPI';
@@ -31,7 +32,7 @@ export default function CameraScreen(){
 
     let TakePhoto = async () => {
      if (cameraRef.current){
-        const options = { quality: 1, base64: true, exif: false };
+        const options = { quality: 0.5, base64: true, exif: false };
         const photos = await cameraRef.current.takePictureAsync(options);
 
         setPhoto({uri: photos.uri,base64:photos.base64});
@@ -41,7 +42,7 @@ export default function CameraScreen(){
     let UploadImage= async ()=>{
       Alert.alert(
         'Chọn ảnh',
-        'Bạn có chắc chắn muốn chọn ảnh này ?, Chọn có sẽ không thể hoàn tác hành động',
+        'Bạn có chắc chắn muốn chọn ảnh này ? Chọn có sẽ không thể hoàn tác hành động',
         [
           {
             text: 'Không',
@@ -64,10 +65,10 @@ export default function CameraScreen(){
               .catch(error => {
                 console.error('Error uploading image:', error);
               });
-              await UpdateTaskStatusCompleted(Token,Data.taskId.toString());      
-              await UpdateURL(Token,ImageShippingid[0].id.toString(),url)           
-              await PostNotification(Token,"ce5bac33-050a-4f1a-a3e6-7e1f84e25d48",DataToken.Username,Data.orderCode.toString())
-              
+               UpdateTaskStatusCompleted(Token,Data.taskId.toString());      
+               UpdateURL(Token,ImageShippingid[0].id.toString(),url)           
+               PostNotification(Token,"59d9635f-3d42-4aff-992d-c84f931a5ed8",DataToken.Username,Data.orderCode.toString())
+              await SendMail(Token,Data.orderId,DataToken.Username,Data.shipperPhone,photo.base64,Data.customerEmail)
               setIsLoading(false);
               router.replace("/(tabs)/Shipping")
           }

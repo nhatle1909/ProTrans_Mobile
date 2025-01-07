@@ -14,7 +14,7 @@ export const GetNotification = async (token : string,id : string) =>{
       return response.data.data;
       if (response.status == 401) router.replace("/")
       } catch (error) {
-        console.error('Error Calling D:', error);
+        console.error('Error Calling Noti:', error);
         return false;
       }
 }
@@ -22,7 +22,7 @@ export const GetNotification = async (token : string,id : string) =>{
 export const PostNotification = async (token : string,id : string,username:string,orderCode:string) =>{
   
   try {
-      const response = await client.post('Notification', 
+      const response = await client.post('Notification/Single', 
         {
           specId : id,
           title : "Hoàn thành đơn hàng",
@@ -39,7 +39,7 @@ export const PostNotification = async (token : string,id : string,username:strin
     return response.data.data;
     if (response.status == 401) router.replace("/")
     } catch (error) {
-      console.error('Error Calling D:', error);
+      console.error('Error Calling DDD:', error);
       return false;
     }
 }
@@ -47,7 +47,7 @@ export const PostNotification = async (token : string,id : string,username:strin
 export const PostNotificationNota = async (token : string,id : string,username:string,fakecode:string) =>{
   
   try {
-      const response = await client.post('Notification', 
+      const response = await client.post('Notification/Single', 
         {
           specId : id,
           title : "Hoàn thành đơn hàng",
@@ -64,14 +64,14 @@ export const PostNotificationNota = async (token : string,id : string,username:s
     return response.data.data;
     if (response.status == 401) router.replace("/")
     } catch (error) {
-      console.error('Error Calling D:', error);
+      console.error('Error Calling Noti:', error);
       return false;
     }
 }
 export const PostNotificationPickup = async (token : string,id : string,username:string,fakecode:string) =>{
   
   try {
-      const response = await client.post('Notification', 
+      const response = await client.post('Notification/Single', 
         {
           specId : id,
           title : "Hoàn thành đơn hàng",
@@ -88,7 +88,7 @@ export const PostNotificationPickup = async (token : string,id : string,username
     return response.data.data;
     if (response.status == 401) router.replace("/")
     } catch (error) {
-      console.error('Error Calling D:', error);
+      console.error('Error Calling Noti:', error);
       return false;
     }
 }

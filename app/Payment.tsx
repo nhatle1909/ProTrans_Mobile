@@ -1,52 +1,115 @@
-import {Header} from "@/components/Header";
-import { qr } from "@/constants/Image";
-import { useAccount, useAccountPersonal } from "@/Model/AccountModel";
+
 import { GetOrderData } from "@/Model/Order";
-import { GetAccount } from "@/Utils/AccountAPI/AccountAPI";
+import { PostNotification } from "@/Utils/NotificationAPI/NotificationAPI";
+import { SendMail } from "@/Utils/SendMailAPI/SendMailAPI";
+import { UpdateTaskStatusCompleted } from "@/Utils/ShippingAPI/ShippingAPI";
 import { DecodeToken, GetToken } from "@/Utils/TokenUtil";
 import { formatPrice } from "@/Utils/ValidateUtil";
-import { Button,View } from "@ant-design/react-native";
+import { View,Button } from "@ant-design/react-native";
 import { AntDesign, FontAwesome, FontAwesome5, FontAwesome6, SimpleLineIcons } from "@expo/vector-icons";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Animated, StyleSheet, TouchableOpacity,Text, Image } from "react-native";
-import { GestureHandlerRootView, ScrollView,Switch } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
+import QRCode from 'react-native-qrcode-svg'; 
+import Spinner from "react-native-loading-spinner-overlay";
+import { useAccount, useAccountPersonal } from "@/Model/AccountModel";
+import { CreateQR } from "@/Utils/VNPayAPI/VNPayAPI";
+import { CheckoutSuccessPopup } from "@/components/popup";
 export default function MainScreen(){
 const Token = GetToken();
 const data = DecodeToken();
 const Data = useLocalSearchParams();
-const [isEnabled, setIsEnabled] = useState(false);
-const [PaymentMethod,setPaymentMethod] = useState("Tiền mặt")
+const [isLoading,setIsLoading] = useState(false);
+const [isCreated,setIsCreated] = useState(false);
 const fadeAnim = useRef(new Animated.Value(0)).current;
 const order = GetOrderData(Token,Data.orderId.toString());
 const account = useAccount(Token,Data.phoneNumber.toString())
-let price = "";
-
-if ( order?.totalPrice !== undefined) {
-      price = formatPrice(order.totalPrice);
-}
-
-
-useEffect(() => { Animated.timing(fadeAnim, { toValue: 1, duration: 1000, useNativeDriver: true, }).start(); }, [fadeAnim]);
-
-const toggleSwitch = () => {
-  setIsEnabled(!isEnabled);
-  if (isEnabled) setPaymentMethod("Tiền mặt")
-  if (!isEnabled) setPaymentMethod("Chuyển qua VNPay")  
-};
+const user = useAccountPersonal(Token,data.Id);
 const [selectedOption, setSelectedOption] = useState(null);
-
 const fadeAnim2 = useRef(new Animated.Value(0)).current;
 
 const qrFadeAnim = useRef(new Animated.Value(0)).current;
 
+let price = "";
 
+const hubConnection = new HubConnectionBuilder()
+.withUrl('https://protrans.azurewebsites.net/notificationHub')
+.withAutomaticReconnect()
+.build();
+const [url,setURL] = useState()
+const [isSuccess,setIsSuccess] = useState(false);
+useEffect(() => {
+  const renewQRCode = async () => {
+    try {
+      const fetchdata = await CreateQR(Token, data.Id,Data.totalPrice); 
+      console.log(fetchdata)
+  setURL(fetchdata);
+    }
+    catch (error) {
+      console.error('Error Calling recreate:', error);
+    }
+  }
+  renewQRCode();
+},[isCreated])
+if ( order?.totalPrice !== undefined) {
+      price = formatPrice(order.totalPrice);
+}
+
+useEffect(() => {
+  const startConnection = async () => {
+      try {
+        hubConnection.on(`${data.Id}`, async (status,message) => {
+          console.log(status)
+          if (status === '200'){
+            setIsSuccess(true);
+            setIsLoading(true);
+            
+            await UpdateTaskStatusCompleted(Token,Data.taskId.toString());     
+            PostNotification(Token,"59d9635f-3d42-4aff-992d-c84f931a5ed8",data.Username,order?.orderCode.toString())
+             SendMail(Token,Data.orderId.toString(),data.Username,user?.phoneNumber,account?.email)
+  
+    
+          }// Handle the notification here, e.g., display a notification, update UI, etc.
+          if (status === '404'){
+            setIsSuccess(false);
+              setIsLoading(true);
+          
+          }
+      });
+          hubConnection.start()
+          .then(() => console.log('Connected'))
+           .catch(error => {
+            console.error(error)
+            hubConnection.start()
+            .then(() => console.log('Connected'))
+      });
+
+          // Subscribe to a specific method
+        
+      } catch (error) {
+        hubConnection.start()
+          .then(() => console.log('Connected'))
+          console.error('Error connecting to SignalR Hub:', error);
+      }
+  };
+
+  startConnection();
+  return () => {
+      console.log("Stopped")
+      hubConnection.stop();
+  };
+}, []);
+
+
+useEffect(() => { Animated.timing(fadeAnim, { toValue: 1, duration: 1000, useNativeDriver: true, }).start(); }, [fadeAnim]);
 
 useEffect(() => {
 
-  if (selectedOption === 'QR') {
+  
 
     Animated.timing(fadeAnim2, {
 
@@ -68,55 +131,32 @@ useEffect(() => {
 
     }).start();
 
-  } else {
-
-    fadeAnim2.setValue(0);
-
-    qrFadeAnim.setValue(0);
-
-  }
+  
 
 }, [selectedOption]);
 
-
-
-const navigate = () => {
-  if (account === null || account === undefined || order === null || order === undefined) {
-    Toast.show({
-
-      type: 'error', // You can use 'success', 'error', 'info'
-      text1: `Dữ liệu chưa tải hoàn thành, xin vui lòng đợi và thử lại sau`,
-      text1Style:{fontSize:13,color:'#40B59F'},
-      position: 'top',
-
-      topOffset: 20,
-
-      visibilityTime: 3000, // Toast will disappear after 3 seconds
-
-    });
-      return;
-  }
-  else 
-    router.push({pathname:"/Camera",params:{taskId:Data.taskId,orderId:Data.orderId,accountId:account?.id,orderCode:order.orderCode}})
-}
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={Style.background}>
-  
-<GestureHandlerRootView>
-<Toast></Toast>
+   {/* <Spinner visible={isLoading} textContent={'Đang xử lý dữ liệu, vui lòng chờ'} textStyle={{fontSize:16,color:'#fff'}} overlayColor="rgba(0, 0, 0, 0.75)" color="#40B59F" /> */}
+   
+    <GestureHandlerRootView>
+    {isLoading === true ? (
+         <CheckoutSuccessPopup isVisible={isLoading} success={isSuccess} onClose={()=>setIsLoading(false)}></CheckoutSuccessPopup>
+    ) : (
     <View style={[Style.container]}>
+ 
     <Animated.View style={[Style.infoPanel,{ opacity: fadeAnim }]}>
         
-        <Text style={Style.Title}>Thông tin khách hàng</Text>
+        <Text style={[Style.Title,{fontFamily:'Quicksand'}]}>Thông tin khách hàng</Text>
           <View style={{flexDirection:'row'}}>
           <FontAwesome style={Style.icon} name="user" size={25} color="black" />
-          <Text style={Style.text}>{order?.fullName}</Text>
+          <Text style={[Style.text,{fontFamily:'Quicksand'}]}>{order?.fullName}</Text>
           </View>
         
           <View style={Style.item}>
           <FontAwesome style={Style.icon} name="phone" size={25} color="black" />
-          <Text style={Style.text}>{order?.phoneNumber}</Text>
+          <Text style={[Style.text,{fontFamily:'Quicksand'}]}>{order?.phoneNumber}</Text>
           </View>
           <View style={Style.item}>
           <SimpleLineIcons style={Style.icon} name="location-pin" size={25} color="green" />
@@ -124,47 +164,51 @@ const navigate = () => {
           </View>
       </Animated.View>
       <Animated.View style={[Style.infoPanel,{ opacity: fadeAnim }]}>
-        <Text style={Style.Title}>Thông tin đơn hàng</Text>
+        <Text style={[Style.Title,{fontFamily:'Quicksand'}]}>Thông tin đơn hàng</Text>
         <View style={Style.item}>
         <AntDesign name="codesquareo" style={Style.icon} size={25} color="black" />
-        <Text style={[Style.text,{textAlign:'left',marginRight:10}]}>Mã đơn hàng</Text>
+        <Text style={[Style.text,{textAlign:'left',marginRight:10},{fontFamily:'Quicksand'}]}>Mã đơn hàng</Text>
           <Text style={Style.text}>{order?.orderCode}</Text>
           </View>
           <View style={[Style.item]}>
             
           <FontAwesome5 style={[Style.icon]} name="money-bill" size={25} color="green" />
-          <Text style={[Style.text,{textAlign:'left',marginRight:10}]}>Tổng tiền</Text>
+          <Text style={[Style.text,{textAlign:'left',marginRight:10},{fontFamily:'Quicksand'}]}>Tổng tiền</Text>
           <Text style={[Style.text]}>{price}</Text>
           
           </View>
      
       </Animated.View> 
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.option, selectedOption === 'QR' && styles.selectedOption]} onPress={() => setSelectedOption('QR')}
-        >
-          <Text style={styles.optionText}>QR</Text>
-        </TouchableOpacity>
-        <TouchableOpacity  style={[styles.option, selectedOption === 'Cash' && styles.selectedOption]}  onPress={() => setSelectedOption('Cash')}
-        >
-          <Text style={styles.optionText}>Cash</Text>
-        </TouchableOpacity>
-        </View> {selectedOption === 'QR' && (
+      
+        </View>
+        {url !== undefined ? (
         <Animated.View style={[styles.qrContainer, { opacity: qrFadeAnim }]}>
-        <Image source={{uri : qr}} style={{width:150,height:150}}resizeMode="contain"/>
+            <QRCode value={url} size={150}/>
           <Animated.Text style={[styles.qrText, { opacity: fadeAnim2 }]}>
             Scan to Pay
           </Animated.Text>
         </Animated.View>
-        )}
+        ):
+        (  <Animated.View style={[styles.qrContainer, { opacity: qrFadeAnim }]}>
+        
+        <Text style={[styles.qrText]}>
+          Đang tạo mã QR
+        </Text>
+      </Animated.View>)
+        } 
        <View style={Style.buttonPanel}>
        
-        <Button style={[Style.btn,{marginLeft:'7%'}]} onPress={()=>router.replace("/(tabs)/Shipping")}> Quay lại</Button>
-         <Button style={[Style.btn,{marginRight:'7%', backgroundColor:'green'}]} onPress={navigate}><Text style={{color:'#fff',fontSize:16}}>Hoàn thành</Text></Button>
+        <Button style={[Style.btn,{marginLeft:'7%'}]} onPress={()=>router.replace("/(tabs)/Shipping")}><Text style={{fontSize:16,fontFamily:'Quicksand'}}>Quay lại</Text></Button>
+         <Button style={[Style.btn,{marginRight:'7%', backgroundColor:'green'}]} onPress={()=>setIsCreated(!isCreated)}><Text style={{color:'#fff',fontSize:16,fontFamily:'Quicksand'}}>Tạo lại QR</Text></Button>
+         {/* <Button style={[Style.btn,{marginRight:'7%', backgroundColor:'green'}]} onPress={()=>setIsCreated(!isCreated)}><Text style={{color:'#fff',fontSize:16,fontFamily:'Quicksand'}}>Hủy đơn hàng</Text></Button> */}
       </View>
       </View>
-     
+   )}
       </GestureHandlerRootView>
+ 
    </LinearGradient>
+   
 )
 }
 const Style = StyleSheet.create({

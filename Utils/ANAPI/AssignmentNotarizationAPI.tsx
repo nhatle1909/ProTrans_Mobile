@@ -12,7 +12,7 @@ export const GetAssignmentNotarizations = async (token : string,id : string) =>{
       return response.data.data;
       if (response.status == 401) router.replace("/")
       } catch (error) {
-        console.error('Error Calling D:', error);
+        console.error('Error Calling Nota:', error);
         return false;
       }
 }

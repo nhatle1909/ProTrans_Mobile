@@ -23,7 +23,6 @@ export const GetPrepareShips = async (token : string,id : string) =>{
           Authorization: `Bearer ${token}`
         }
       });
-      console.log(response.data.data)
     if (response.status == 200)
     return response.data.data;
     if (response.status == 401) router.replace("/")

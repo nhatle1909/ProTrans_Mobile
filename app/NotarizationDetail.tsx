@@ -10,7 +10,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text } from "react-native";
+import { Alert, StyleSheet, Text } from "react-native";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -29,10 +29,25 @@ export default function NotarizationDetail2(){
   }, [fetchedDocumentList]);
 
     const FinishTask=async()=>{ 
-     await UpdateAssignmentNotarizationStatus(token,item.id)
-     await UpdateDocumentStatusNotarization(token,item.id)
-     await PostNotificationNota(token,"ce5bac33-050a-4f1a-a3e6-7e1f84e25d48",data.Username,item.fakecode.toString())
-     router.replace('/(tabs)/GoToNotarize');
+      Alert.alert(
+        'Xác nhận',
+        'Bạn có chắc chắn muốn thực hiện hành động này ? Chọn có sẽ không thể hoàn tác hành động',
+        [
+          {
+            text: 'Không',
+            style: 'cancel',
+          },
+          { text: 'Có', onPress:async () => 
+            { 
+              await UpdateAssignmentNotarizationStatus(token,item.id)
+              UpdateDocumentStatusNotarization(token,item.id)
+               PostNotificationNota(token,"59d9635f-3d42-4aff-992d-c84f931a5ed8",data.Username,item.fakecode.toString())
+              router.replace('/(tabs)/GoToNotarize');
+          }
+         },
+        ]
+      );
+
     }
 
     return(
@@ -43,7 +58,7 @@ export default function NotarizationDetail2(){
       
              <GestureHandlerRootView>
      <SafeAreaView style={style.itemContainer}>
-     {documentList ? (
+     {documentList !== null || documentList !== undefined ? (
         <FlatList
           data={documentList}
           keyExtractor={(item) => item.id}
@@ -57,14 +72,14 @@ export default function NotarizationDetail2(){
               )}
       />
             ): (
-        <Text>Loading data...</Text> // Display loading message while data is being fetched
+        <Text style={{fontFamily:'Quicksand'}}>Đang tải dữ liệu</Text> // Display loading message while data is being fetched
       )}
           
       </SafeAreaView>
     </GestureHandlerRootView> 
       <View style={style.buttonPanel}>
-      <Button style={[style.btn,{marginLeft:'7%'}]} onPress={()=>router.replace("/(tabs)/Notarization")}> Quay lại</Button>
-      <Button style={[style.btn,{marginRight:'7%', backgroundColor:'green'}]}onPress={()=>FinishTask()}><Text style={{color:'#fff',fontSize:16}}>Hoàn thành</Text></Button>
+      <Button style={[style.btn,{marginLeft:'7%'}]} onPress={()=>router.replace("/(tabs)/Notarization")}><Text style={{fontSize:16,fontFamily:'Quicksand'}}>Quay lại</Text></Button>
+      <Button style={[style.btn,{marginRight:'7%', backgroundColor:'green'}]}onPress={()=>FinishTask()}><Text style={{color:'#fff',fontSize:16,fontFamily:'Quicksand'}}>Hoàn thành</Text></Button>
       </View>
      
         </LinearGradient>

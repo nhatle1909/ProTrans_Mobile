@@ -1,28 +1,27 @@
-import React, {  useEffect, useRef, useState }  from 'react';
+import React, {  useEffect, useState }  from 'react';
 import {CustomListItem} from "@/components/CustomItem/CustomItemList";
-import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Alert, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import {  StyleSheet, Text,  } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {Header} from '@/components/Header';
-import { usePrepareShippingTaskList, useShippingTaskList } from '../../Model/ShippingModel';
+import {  PrepareListModel, usePrepareShippingTaskList} from '../../Model/ShippingModel';
 import { router} from 'expo-router';
 import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
-import { UpdateTaskStatusShipping } from '@/Utils/ShippingAPI/ShippingAPI';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import Toast from 'react-native-toast-message'
-import  {useFonts} from 'expo-font'
-import { customFonts } from '@/constants/Fonts';
 export default function NotarizationTask() {
+
   const Token = GetToken();
   const DataToken = DecodeToken();
-  const [fontsLoaded] = useFonts(customFonts);
-  let data = usePrepareShippingTaskList(Token,DataToken.Id);
+  let data =  usePrepareShippingTaskList(Token,DataToken.Id);
+  
   const hubConnection = new HubConnectionBuilder()
   .withUrl('https://protrans.azurewebsites.net/notificationHub')
   .withAutomaticReconnect()
   .build();
   useEffect(() => {
+    
     const startConnection = async () => {
         try {
           hubConnection.on(`${DataToken.Id}`, async (title,message,author) => {
@@ -35,8 +34,8 @@ export default function NotarizationTask() {
         
               text2: `${message}`,
               
-              text1Style:{fontSize:13,marginTop:-10,color:'#40B59F'},
-              text2Style:{fontSize:12,flexWrap:'wrap'},
+              text1Style:{fontSize:13,marginTop:-10,color:'#40B59F',fontFamily:'Quicksand'},
+              text2Style:{fontSize:12,flexWrap:'wrap',fontFamily:'Quicksand'},
               position: 'top',
         
               topOffset: 20,
@@ -48,7 +47,7 @@ export default function NotarizationTask() {
         });
             hubConnection.start()
             .then(() => console.log('Connected'))
-             .catch(error => console.error(error));
+             .catch(error => console.error("error",error));
 
             // Subscribe to a specific method
           
@@ -67,18 +66,17 @@ export default function NotarizationTask() {
   const handleShippingPress = (id : string,orderId : string,address:string) =>{
     router.push({pathname:"/MapDocument",params :{taskId : id,orderId: orderId,address :  address}})
   }
-  if (data === null || data.length===0){
+  if (data === undefined ){
     return (
       <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={style.container}>
       <Header username={DataToken.Username} tabName = 'Danh sách đơn hàng cần giao'></Header>
       <Toast></Toast>
-      <Text style={[style.title,{fontFamily:'CustomFont'}]}>Hiện không có công việc</Text>
+      <Text style={[style.title,{fontFamily:'Quicksand'}]}>Đang tải dữ liệu</Text>
       </LinearGradient>
     ) 
   }
-
-  if (data !== null){
+  else{
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={style.container}>
@@ -87,25 +85,39 @@ export default function NotarizationTask() {
     <GestureHandlerRootView >
 
      <SafeAreaView style={style.itemContainer}>
-     <Text style={style.title1}>Tài liệu cần nhận để giao hàng</Text>
-        <FlatList
-          data={data}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (       
-              <CustomListItem
-                name={item.agencyName}
-                deadline={item.deadline}
-                money={item.orderCode}
-                onPress={()=> {handleShippingPress(item.id,item.orderId,item.agencyaddress)}} /> 
-              )}
-      />
+     {data !== undefined && (
+       <>
+        {
+          data !== null ? 
+          (
+            <>
+             <Text style={[style.title1,{fontFamily:'Quicksand'}]}>Tài liệu cần nhận để giao hàng</Text>
+             <FlatList
+                data={data}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => 
+                  (
+                  <CustomListItem
+                    name={item.agencyName}
+                    deadline={item.deadline}
+                    money={item.orderCode}
+                    onPress={() => { handleShippingPress(item.id, item.orderId, item.agencyaddress); } } />
+                  )} />
+              </>
+          )
+        : (
+              <Text style={[style.title1,{fontFamily:'Quicksand'}]}>Hiện không có công việc</Text>
+          )
+        }
+       </>
+    )}
       </SafeAreaView>
     </GestureHandlerRootView> 
     </LinearGradient>
   );
 }
-
 }
+
 const style = StyleSheet.create({
   container:{
     flex:1

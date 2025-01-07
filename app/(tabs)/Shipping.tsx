@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {Header} from '@/components/Header';
-import { useShippingTaskList } from '../../Model/ShippingModel';
+import { ShippingListModel, useShippingTaskList } from '../../Model/ShippingModel';
 import { router} from 'expo-router';
 import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
 import Toast from 'react-native-toast-message';
@@ -14,9 +14,9 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 export default function NotarizationTask() {
   const Token = GetToken();
   const DataToken = DecodeToken();
-  const data = useShippingTaskList(Token,DataToken.Id);
-
-  const hubConnection = new HubConnectionBuilder()
+const data = useShippingTaskList(Token,DataToken.Id);
+console.log(data)
+const hubConnection = new HubConnectionBuilder()
   .withUrl('https://protrans.azurewebsites.net/notificationHub')
   .withAutomaticReconnect()
   .build();
@@ -45,7 +45,7 @@ export default function NotarizationTask() {
             // Handle the notification here, e.g., display a notification, update UI, etc.
         });
             hubConnection.start()
-            .then(() => console.log('Connected'))
+            .then()
              .catch(error => console.error(error));
 
             // Subscribe to a specific method
@@ -57,7 +57,7 @@ export default function NotarizationTask() {
 
     startConnection();
     return () => {
-        console.log("Stopped")
+     
         hubConnection.stop();
     };
 }, []);
@@ -66,43 +66,62 @@ export default function NotarizationTask() {
  
     router.push({pathname:"/MapShipping",params :{taskId : id,orderId: orderId,address :  address,phoneNumber:phoneNumber}})
   }
-  if (data === null || data.length===0){
+  if ( data === undefined ){
     return (
       <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={style.container}>
       <Header username={DataToken.Username} tabName = 'Danh sách đơn hàng cần giao'></Header>
       <Toast></Toast>
-      <Text style={style.title}>Hiện không có công việc</Text>
+      <Text style={[style.title,{fontFamily:'Quicksand'}]}>Đang tải dữ liệu</Text>
       </LinearGradient>
     ) 
   }
-  if (data !== null){
-  return (
+  else { 
+    return (
     <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={style.container}>
       <Header username={DataToken.Username} tabName = 'Danh sách công việc'></Header>
       <Toast></Toast>
     <GestureHandlerRootView >
      <SafeAreaView style={style.itemContainer}>
-     <Text style={style.title1}>Đơn hàng cần giao</Text>
-        <FlatList
-          data={data}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (       
-              <CustomListItem
-                name={item.address}
-                deadline={item.deadline}
-                money={item.orderCode}
-                onPress={()=> {handleShippingPress(item.id,item.orderId,item.address,item.phoneNumber)}} /> 
-              )}
-      />
+      {data !== undefined && (
+       <>{
+          data !== null ? (
+          <><Text style={[style.title1,{fontFamily:'Quicksand'}]}>Đơn hàng cần giao</Text><FlatList
+                  data={data}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => (
+                    <CustomListItem
+                      name={item.address}
+                      deadline={item.deadline}
+                      money={item.orderCode}
+                      onPress={() => { handleShippingPress(item.id, item.orderId, item.address, item.phoneNumber); } } />
+                  )} /></>
+              )
+        :(
+          <Text style={[style.title1,{fontFamily:'Quicksand'}]}>Hiện không có công việc</Text>
+         )
+        }</>)}
+ 
       </SafeAreaView>
     </GestureHandlerRootView> 
     </LinearGradient>
   );
+  
 }
+}
+// if ( data.length===0){
+//   return (
+//     <LinearGradient colors={['#40B59F', '#fff']}
+//   locations={[0.41, 1]} style={style.container}>
+//     <Header username={DataToken.Username} tabName = 'Danh sách đơn hàng cần giao'></Header>
+//     <Toast></Toast>
+   
+//     </LinearGradient>
+//   ) 
+// }
+  
 
-}
 const style = StyleSheet.create({
   container:{
     flex:1

@@ -1,10 +1,11 @@
 import { avatar, logo } from "@/constants/Image";
 import { useAccountPersonal } from "@/Model/AccountModel";
+import { Logout } from "@/Utils/Auth/LogoutUtil";
 import { DecodeToken, GetToken } from "@/Utils/TokenUtil";
 import { View } from "@ant-design/react-native";
 import { Entypo, FontAwesome, FontAwesome5, FontAwesome6, Fontisto, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { Image, StyleSheet, Text } from "react-native";
+import { Button, Image, Pressable, StyleSheet, Text } from "react-native";
 
 export default function Profile()
 {   const Token = GetToken();
@@ -47,14 +48,19 @@ export default function Profile()
                     <FontAwesome5 style={[style.icon,{marginLeft:15}]} name="store-alt" size={24} color={'#40B59F'} />
                     <Text style={style.text} numberOfLines={1} lineBreakMode="tail"> {user?.agencyName} </Text>
                     </View>
-                    <View style={style.infoMidPanel}>
+                    {/* <View style={style.infoMidPanel}>
                     <Entypo style={[style.icon,{marginLeft:15}]} name="address" size={24} color={'#40B59F'} />
                     <Text style={style.text} numberOfLines={1} lineBreakMode="tail"> {user?.address} </Text>
-                    </View>
+                    </View> */}
                     <View style={style.infoMidPanel}>
                     <FontAwesome5 style={[style.icon,{marginLeft:15}]} name="birthday-cake" size={24} color={'#40B59F'} />
                     <Text style={style.text} numberOfLines={1} lineBreakMode="tail"> {user?.dob} </Text>
+                  
                     </View>
+                    <Pressable style={[style.infoMidPanel,{backgroundColor:'#F04526',height:'auto'}]} onPress={() => Logout()}>
+                    <Text style={[style.text,{color:'#fff',textAlign:'center'}]} > Đăng xuất </Text>
+                    </Pressable>
+        
                 </View>
             </View>
             </LinearGradient>

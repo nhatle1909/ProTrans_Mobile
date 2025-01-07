@@ -12,21 +12,14 @@ import  BottomSheet,{ BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import * as Location from 'expo-location';
 import { formatPrice } from '@/Utils/ValidateUtil';
 import { UpdateTaskStatusShipping } from '@/Utils/ShippingAPI/ShippingAPI';
+import { MapboxAPI } from '@/constants/API';
 import MapboxGL, { PointAnnotation } from "@rnmapbox/maps"
-MapboxGL.setAccessToken("sk.eyJ1IjoiY2FkZW56IiwiYSI6ImNtM2U5MW12ODA5cGUya3IzNG90a25zMnoifQ.99nRizDqZJPtwwCCxa1juA")
+ MapboxGL.setAccessToken(MapboxAPI)
 export default function Map(){
   const TokenId = GetToken();
   const snapPoints = useMemo(() => ['60%','100%'],[])
   const bottotSheetRef = useRef(null);
-  const pinColor = "Green"
-  
   const Data = useLocalSearchParams();
-  const [region, setRegion] = useState({
-    latitude: 10.837932096000031,
-    longitude: 106.83272935100007,
-    latitudeDelta: 0.0722,
-    longitudeDelta: 0.0221,
-  });
 
   
   const [errorMsg, setErrorMsg] = useState(null);
@@ -34,7 +27,6 @@ export default function Map(){
     latitude: 0,
     longitude: 0,
   });
-
   useEffect(() => {
     (async () => {
       
@@ -51,6 +43,20 @@ export default function Map(){
   })
     })();
   }, []);
+  // useEffect(() => {
+  //   const intervalId = setInterval(async () => {
+
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     setOrigin({
+  //       latitude: location.coords.latitude,
+  //       longitude: location.coords.longitude,
+  //     });
+ 
+  //   }, 5000); // 5000 milliseconds = 5 seconds
+  
+  //   return () => clearInterval(intervalId);
+  // }, [isRedirect]);
+
 
   const [Address] = useState<string>(Data.address.toString())
   
@@ -78,7 +84,6 @@ export default function Map(){
   };
     return (
       <View style={Style.container}>  
-
 
 <MapboxGL.MapView style={{ flex: 1 }}>
 <MapboxGL.Camera zoomLevel={16} centerCoordinate={[origin.longitude,origin.latitude]}/>
@@ -125,39 +130,39 @@ export default function Map(){
           
         <View style={Style.item}>
           <SimpleLineIcons style={Style.icon} name="location-pin" size={25} color="green"/>
-          <Text style={Style.text}>Vị trí hiện tại</Text>
+          <Text style={[Style.text,{fontFamily:'Quicksand'}]}>Vị trí hiện tại</Text>
           </View>
           <View style={Style.item}>
           <SimpleLineIcons style={Style.icon} name="location-pin" size={25} color="red" />
-          <Text style={Style.text}>{Address}</Text>
+          <Text style={[Style.text,{fontFamily:'Quicksand'}]}>{Address}</Text>
           </View>
       </View>
      
       <View style={[Style.infoPanel]}>
         
-        <Text style={Style.Title}>Thông tin tiếp nhận đơn hàng</Text>
+        <Text style={[Style.Title,{fontFamily:'Quicksand'}]}>Thông tin tiếp nhận đơn hàng</Text>
         <View style={Style.item}>
           
           <AntDesign name="codesquareo" style={Style.icon} size={25} color="black" />
-          <Text style={[Style.text,{textAlign:'left',marginRight:10}]}>Mã đơn hàng</Text>
-          <Text style={[Style.text,{textAlign:'right',marginRight:10}]}>{data?.orderCode}</Text>
+          <Text style={[Style.text,{textAlign:'left',marginRight:10},{fontFamily:'Quicksand'}]}>Mã đơn hàng</Text>
+          <Text style={[Style.text,{textAlign:'right',marginRight:10},{fontFamily:'Quicksand'}]}>{data?.orderCode}</Text>
           </View>
         
           <View style={Style.item}>
           <MaterialCommunityIcons name="calendar-clock" style={Style.icon}   size={25} color="black" />
-          <Text style={[Style.text,{textAlign:'left',marginRight:10}]}>Hạn giao đơn hàng</Text>
-          <Text style={[Style.text,{textAlign:'right',marginRight:10}]}>{data?.deadline}</Text>
+          <Text style={[Style.text,{textAlign:'left',marginRight:10},{fontFamily:'Quicksand'}]}>Hạn giao đơn hàng</Text>
+          <Text style={[Style.text,{textAlign:'right',marginRight:10},{fontFamily:'Quicksand'}]}>{data?.deadline}</Text>
           </View>
           <View style={Style.item}>
           <FontAwesome style={Style.icon} name="clipboard" size={25} color="black" />
-          <Text style={[Style.text,{textAlign:'left',marginRight:10}]}>Trạng thái</Text>
-          <Text style={[Style.text,{textAlign:'right',marginRight:10}]}>Đang tiếp nhận</Text>
+          <Text style={[Style.text,{textAlign:'left',marginRight:10},{fontFamily:'Quicksand'}]}>Trạng thái</Text>
+          <Text style={[Style.text,{textAlign:'right',marginRight:10},{fontFamily:'Quicksand'}]}>Đang tiếp nhận</Text>
           </View>
      
       </View>
       <View style={Style.buttonPanel}>
-      <Button style={[Style.btn,{marginLeft:'7%'}]} onPress={()=>router.replace("/(tabs)/Notarization")}> Quay lại</Button>
-      <Button style={[Style.btn,{marginRight:'7%', backgroundColor:'green'}]}onPress={()=>navigation()}><Text style={{color:'#fff',fontSize:16}}>Hoàn thành</Text></Button>
+    <Button style={[Style.btn,{marginLeft:'7%'}]} onPress={()=>router.replace("/(tabs)/GetDocument")}><Text style={{fontSize:16,fontFamily:'Quicksand'}}>Quay lại</Text></Button>
+      <Button style={[Style.btn,{marginRight:'7%', backgroundColor:'green'}]}onPress={()=>navigation()}><Text style={{color:'#fff',fontSize:16,fontFamily:'Quicksand'}}>Hoàn thành</Text></Button>
       </View>
       </View>
       </BottomSheetScrollView>
@@ -220,6 +225,7 @@ export default function Map(){
         height:45,
         marginTop:15,
         marginHorizontal:'5%',
+        borderRadius:10
       },
       Title:{
         fontSize:19,

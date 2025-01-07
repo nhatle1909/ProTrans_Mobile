@@ -24,11 +24,13 @@ agencyName:string;
 agencyaddress:string;
 }
 export const useShippingTaskList = (Token:string,id:string) => {
-  const [ShippingTaskList, setShippingTaskList] = useState<ShippingListModel[]>([]);
+  const [ShippingTaskList, setShippingTaskList] = useState<ShippingListModel[]>();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await GetShippings(Token, id); // Assuming you have token and id
+     
         let sortedData = await data.sort((a,b) => new Date(a.deadline) - new Date(b.deadline))
 
         // Iterate through each assignment notarization and fetch order details
@@ -39,18 +41,19 @@ export const useShippingTaskList = (Token:string,id:string) => {
             return { ...ShipTask, deadline: dateObject.toLocaleDateString('vi-VN'),orderCode : order.orderCode, address :order.address ,phoneNumber:order.phoneNumber }; // Merge data
           })
         );
-
+        
         setShippingTaskList(updatedData);// Update state with updated deadlines
       } catch (error) {
-      
+        setShippingTaskList(null)
       }
     };
     fetchData();
   }, []);
+
   return ShippingTaskList;
 };
 export const usePrepareShippingTaskList = (Token:string,id:string) => {
-  const [ShippingTaskList, setShippingTaskList] = useState<PrepareListModel[]>([]);
+  const [ShippingTaskList, setShippingTaskList] = useState<PrepareListModel[]>();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,9 +67,11 @@ export const usePrepareShippingTaskList = (Token:string,id:string) => {
             return { ...ShipTask, deadline: dateObject.toLocaleDateString('vi-VN'),orderCode : order.orderCode,agencyaddress :agency.address,agencyName:agency.name }; // Merge data
           })
         );
+        console.log(data);
+        console.log("Updated data" + updatedData)
         setShippingTaskList(updatedData); // Update state with updated deadlines
       } catch (error) {
-      
+        setShippingTaskList(null)
       }
     };
     fetchData();
@@ -77,7 +82,7 @@ export const usePrepareShippingTaskList = (Token:string,id:string) => {
 
 
 export const usePickupList = (Token:string,id:string) => {
-  const [ShippingTaskList, setShippingTaskList] = useState<ShippingListModel[]>([]);
+  const [ShippingTaskList, setShippingTaskList] = useState<ShippingListModel[]>();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -93,7 +98,7 @@ export const usePickupList = (Token:string,id:string) => {
         );
         setShippingTaskList(updatedData); // Update state with updated deadlines
       } catch (error) {
- 
+        setShippingTaskList(null)
       }
     };
     fetchData();
