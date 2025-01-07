@@ -1,4 +1,4 @@
-import React, { useEffect }  from 'react';
+import React, { useEffect, useState }  from 'react';
 import {CustomListItem} from "@/components/CustomItem/CustomItemList";
 import { FlatList, GestureHandlerRootView} from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,6 +21,14 @@ export default function NotarizationTask() {
   .withUrl('https://protrans.azurewebsites.net/notificationHub')
   .withAutomaticReconnect()
   .build();
+
+  const [isLoading,setIsLoading] = useState(true);
+  useEffect(() => {
+    const loading = setTimeout (() => {
+      setIsLoading(false);
+    },1000);
+    return () => clearTimeout(loading); 
+  },[data])
   useEffect(() => {
     const startConnection = async () => {
         try {
@@ -66,18 +74,18 @@ export default function NotarizationTask() {
   const handleShippingPress = (id : string,address : string,taskId : string) =>{
     router.push({pathname:"/MapPickup",params :{orderId: id,address :  address,taskId:taskId}})
   }
-  if (data === null || data.length===0){
+  if (data === undefined){
     return (
       <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={style.container}>
       <Header username={DataToken.Username} tabName = 'Danh sách đơn hàng cần giao'></Header>
       <Toast></Toast>
-      <Text style={style.title}>Hiện không có công việc</Text>
+      <Text style={[style.title,{fontFamily:'Quicksand'}]}>Đang tải dữ liệu</Text>
       </LinearGradient>
     ) 
   }
-  if (data !== null){
-  return (
+  else 
+  {  return (
     <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={style.container}>
       <Header username={DataToken.Username} tabName = 'Danh sách tài liệu cần nhận'></Header>
@@ -85,27 +93,37 @@ export default function NotarizationTask() {
     <GestureHandlerRootView >
       
      <SafeAreaView style={style.itemContainer}>
-      
-      <Text style={style.title1}>Đơn hàng cần nhận tài liệu gốc</Text>
-              <FlatList
-          
-          data={data}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (       
-              <CustomListItem
-                name={item.address}
-                deadline={item.deadline}
-                money={item.orderCode}
-                onPress={()=> {handleShippingPress(item.orderId,item.address,item.id)}} /> 
-              )}
-      />
+     {data !== undefined && (
+       <>{
+          data !== null ? 
+          (
+          <>
+              <Text style={[style.title1,{fontFamily:'Quicksand'}]}>Đơn hàng cần nhận tài liệu gốc</Text>
+              <FlatList 
+                data={data}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (       
+                  <CustomListItem
+                    name={item.address}
+                    deadline={item.deadline}
+                    money={item.orderCode}
+                    onPress={()=> {handleShippingPress(item.orderId,item.address,item.id)}} /> 
+                  )} />
+         </>
+          )
+        : (
+                <Text style={[style.title1,{fontFamily:'Quicksand'}]}>Hiện không có công việc</Text>
+          )
+        }
+       </>
+    )}
       </SafeAreaView>
     </GestureHandlerRootView> 
     </LinearGradient>
   );
 }
-
 }
+
 const style = StyleSheet.create({
   container:{
     flex:1

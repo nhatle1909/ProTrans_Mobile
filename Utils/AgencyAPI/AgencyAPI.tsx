@@ -12,7 +12,7 @@ export const GetAgency = async (token : string,id : string) =>{
       return response.data.data;
       if (response.status == 401) router.replace("/")
       } catch (error) {
-        console.error('Error Calling: Order ', error );
+        console.error('Error Calling: Agency ', error );
         return false;
       }
 }

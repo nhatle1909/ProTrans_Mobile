@@ -54,16 +54,16 @@ export const CustomListNotarize: React.FC<CustomListItemProps> = ({
           <ListItem.Content style={styles.content}>
           
           <View style={styles.valueContainer}>
-              <Text style={{fontSize:13}}>Đang công chứng</Text>
+              <Text style={{fontSize:13,fontFamily:"Quicksand"}}>Đang công chứng</Text>
             </View>
-          <View style={[styles.address,{ paddingBottom:5,borderBottomWidth:1,}]}>
-          <Text style={styles.label}> Mã công việc</Text>
+          <View style={[styles.address,{ paddingBottom:5,borderBottomWidth:1}]}>
+          <Text style={[styles.label,{fontFamily:"Quicksand"}]}> Mã công việc</Text>
               <Text style={styles.label}>{id}</Text>
          
             </View>
             <View style={styles.deadline}>
             <MaterialCommunityIcons name="calendar-clock" size={23} style={styles.icon} color="black" />
-              <Text style={[styles.label,{color:'grey'}]}>{deadline}</Text>
+              <Text style={[styles.label,{color:'grey',fontFamily:"Quicksand"}]}>{deadline}</Text>
             </View>
           </ListItem.Content>
      

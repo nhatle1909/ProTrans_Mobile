@@ -21,7 +21,7 @@ export default function CameraScreen(){
 
     let TakePhoto = async () => {
      if (cameraRef.current){
-        const options = { quality: 1, base64: true, exif: false };
+        const options = { quality: 0.5, base64: true, exif: false };
         const photos = await cameraRef.current.takePictureAsync(options);
 
         setPhoto({uri: photos.uri,base64:photos.base64});
@@ -31,7 +31,7 @@ export default function CameraScreen(){
     let UploadImage= async ()=>{
       Alert.alert(
         'Chọn ảnh',
-        'Bạn có chắc chắn muốn chọn ảnh này ?, Chọn có sẽ không thể hoàn tác hành động',
+        'Bạn có chắc chắn muốn chọn ảnh này ? Chọn có sẽ không thể hoàn tác hành động',
         [
           {
             text: 'Không',
@@ -58,7 +58,7 @@ export default function CameraScreen(){
                
               await UpdateURL(Token,Data.ImageShippingid.toString(),url)
               setIsLoading(false)
-              router.push({pathname: '/DocumentList', params:{orderId : Data.orderId,taskId:Data.taskId}})
+              router.push({pathname: '/DocumentList', params:{orderId : Data.orderId,taskId:Data.taskId,orderCode:Data.orderCode}})
          },
         }
         ]

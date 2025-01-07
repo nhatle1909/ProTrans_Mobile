@@ -11,8 +11,6 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ username,tabName })  => {
-  const [currentTime, setCurrentTime] = useState(new Date());
-
 
   return (
     <View style={styles.header}>
@@ -21,7 +19,7 @@ export const Header: React.FC<HeaderProps> = ({ username,tabName })  => {
       </View>
         <View style = {styles.tabname}>
        
-      <Text style={styles.timeText}>Xin chào, {username}</Text>
+      <Text style={[styles.timeText,{fontFamily:'Quicksand'}]}>Xin chào, {username}</Text>
 
       </View>
       <View style={[styles.notif]}>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { FlatList, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -64,22 +64,21 @@ export default function NotarizationTask2() {
         hubConnection.stop();
     };
 }, []);
-
-  console.log(data);
     const handleShippingPress = (id : string,address : string,fakecode:string) =>{
       router.push({pathname:"/NotarizationDetail",params :{id: id,address:  address,fakecode:fakecode}})
     }
-    if (data === null || data.length===0){
+
+    if (data === undefined){
       return (
         <LinearGradient colors={['#40B59F', '#fff']}
       locations={[0.41, 1]} style={style.container}>
         <Header username={DataToken.Username} tabName = 'Danh sách đơn hàng cần giao'></Header>
         <Toast></Toast>
-        <Text style={style.title}>Hiện không có công việc</Text>
+        <Text style={[style.title,{fontFamily:'Quicksand'}]}>Đang tải dữ liệu</Text>
         </LinearGradient>
       ) 
-    }
-  if (data !== null){
+    } else {
+
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={style.container}>
@@ -88,26 +87,39 @@ export default function NotarizationTask2() {
     <GestureHandlerRootView >
   
      <SafeAreaView style={style.itemContainer}>
-     <Text style={style.title1}>Đơn hàng cần công chứng</Text>
-        <FlatList
-          data={data}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (       
-              <CustomListNotarize
-              id={item.fakecode}
-                status={item.status}
-                deadline={item.deadline}
-                
+     {data !== undefined && (
+       <>{
+          data !== null? 
+          (
+          <>
+            <Text style={[style.title1,{fontFamily:'Quicksand'}]}>Đơn hàng cần công chứng</Text>
+            <FlatList
+            data={data}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (       
+                <CustomListNotarize
+                id={item.fakecode}
+                  status={item.status}
+                  deadline={item.deadline}
                   onPress={()=> {handleShippingPress(item.id,item.status,item.fakecode)}} /> 
-              )}
-      />
+                )}
+            />          
+          </>
+          )
+        : 
+          (
+            <Text style={[style.title1,{fontFamily:'Quicksand'}]}>Hiện không có công việc</Text>
+          )
+        }
+      </>
+    )}
       </SafeAreaView>
     </GestureHandlerRootView> 
     </LinearGradient>
   );
 }
+    }
 
-}
 const style = StyleSheet.create({
   container:{
     flex:1

@@ -81,7 +81,7 @@ export default function Index() {
                 onChangeText={SetPassword}/>
             </View>
        <WhiteSpace/>
-          <Button style={style.btn} onPress={HandleLogin}><Text style={style.text}>Đăng nhập</Text></Button>
+          <Button style={[style.btn]} onPress={HandleLogin}><Text style={[style.text,{fontFamily:'Quicksand'}]}>Đăng nhập</Text></Button>
       </Form>
     </LinearGradient>
   );

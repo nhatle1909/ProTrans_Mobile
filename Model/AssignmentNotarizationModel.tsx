@@ -29,7 +29,7 @@ export const useAssignmentNotarizations = (Token:string,id:string) => {
 
         setAssignmentNotarizations(updatedData); // Update state with updated deadlines
       } catch (error) {
-    
+        setAssignmentNotarizations(null)
       }
     };
 

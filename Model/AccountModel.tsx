@@ -11,8 +11,8 @@ export interface Account{
     dob:string
     address:string
     gender:string
-
-}
+    email:string
+  }
 export const useAccount = (Token:string,id:string) => {
     const [Account, setAccount] = useState<Account>();
   
@@ -21,7 +21,8 @@ export const useAccount = (Token:string,id:string) => {
         try {
           const data = await GetAccount(Token, id); // Assuming you have token and id   
           // Iterate through each assignment notarization and fetch order details
-  
+          const newDate =  await new Date(data.dob);
+          data.dob = newDate.toLocaleDateString('vi-VN')
           setAccount(data); // Update state with updated deadlines
         } catch (error) {
       

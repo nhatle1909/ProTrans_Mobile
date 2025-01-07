@@ -54,16 +54,16 @@ export const CustomListItem: React.FC<CustomListItemProps> = ({
           <ListItem.Content style={styles.content}>
           
           <View style={styles.valueContainer}>
-              <Text style={{fontSize:16}}>{money}</Text>
+              <Text style={{fontSize:16,fontFamily:"Quicksand"}}>{money}</Text>
             </View>
             
           <View style={[styles.address,{ paddingBottom:5,borderBottomWidth:1,}]}>
           <SimpleLineIcons style={styles.icon} name="location-pin" size={23} color="red"/>
-              <Text style={styles.label} numberOfLines={3} ellipsizeMode="tail">{name}</Text>
+              <Text style={[styles.label,{fontFamily:"Quicksand"}]} numberOfLines={3} ellipsizeMode="tail">{name}</Text>
             </View>
             <View style={styles.deadline}>
             <MaterialCommunityIcons name="calendar-clock" size={23} style={styles.icon} color="black" />
-              <Text style={[styles.label,{color:'grey'}]}>{deadline}</Text>
+              <Text style={[styles.label,{color:'grey',fontFamily:"Quicksand"}]}>{deadline}</Text>
             </View>
           </ListItem.Content>
      

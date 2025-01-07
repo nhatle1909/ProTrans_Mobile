@@ -17,11 +17,11 @@ export default function NotarizationTask() {
   const DataToken = DecodeToken();
   const data = useDocumentList(Token,Data.taskId);
   const handleShippingPress = (id : string) =>{
-    router.push({pathname:"/Camera2",params :{ImageShippingid: id,orderId : Data.orderId,taskId:Data.taskId}})
+    router.push({pathname:"/Camera2",params :{ImageShippingid: id,orderId : Data.orderId,taskId:Data.taskId,orderCode:Data.orderCode}})
   }
   const NavigateBack = async () => {
     await UpdateTaskStatusCompleted(Token,Data.taskId.toString())
-    await PostNotificationPickup(Token,"ce5bac33-050a-4f1a-a3e6-7e1f84e25d48",DataToken.Username,Data.orderCode)
+    await PostNotificationPickup(Token,"59d9635f-3d42-4aff-992d-c84f931a5ed8",DataToken.Username,Data.orderCode)
     router.replace("/(tabs)/Notarization")
   }
   if (data !== null){

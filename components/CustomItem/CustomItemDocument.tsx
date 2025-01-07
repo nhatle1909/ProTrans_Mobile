@@ -55,13 +55,13 @@ export const CustomListDocument: React.FC<CustomListItemProps> = ({
           <ListItem.Content style={styles.content}>
           
           <View style={styles.valueContainer}>
-              <Text style={{fontSize:13}}>{code}</Text>
-              <Text style={{fontSize:14}}>Số trang : {pageNumber}</Text>
+              <Text style={{fontSize:13,fontFamily:"Quicksand"}}>Mã tài liệu: {code}</Text>
+              <Text style={{fontSize:14,fontFamily:"Quicksand"}}>Số trang: {pageNumber}</Text>
             </View>
             
           <View style={styles.address}>
-              <Text style={[styles.label,{alignSelf:'flex-start'}]}>{lan1}</Text>
-              <Text style={[styles.label,{alignSelf:'flex-end'}]}>{lan2}</Text>
+              <Text style={[styles.label,{alignSelf:'flex-start',fontFamily:"Quicksand"}]}>{lan1}</Text>
+              <Text style={[styles.label,{alignSelf:'flex-end',fontFamily:"Quicksand"}]}>{lan2}</Text>
             </View>
            
           </ListItem.Content>
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   valueContainer:
   {
     width:'100%',
-    alignItems:'flex-end',
+    justifyContent:'space-between',
     marginTop:-5,
     marginRight:-10,
     
