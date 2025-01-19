@@ -19,6 +19,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 import { useAccount, useAccountPersonal } from "@/Model/AccountModel";
 import { CreateQR } from "@/Utils/VNPayAPI/VNPayAPI";
 import { CheckoutSuccessPopup } from "@/components/popup";
+import { qr } from "@/constants/Image";
 export default function MainScreen(){
 const Token = GetToken();
 const data = DecodeToken();
@@ -134,7 +135,21 @@ useEffect(() => {
   
 
 }, [selectedOption]);
-
+const navigate = () => {
+  if (account === null || account === undefined || order === null || order === undefined) {
+    Toast.show({
+      type: 'error', // You can use 'success', 'error', 'info'
+      text1: `Dữ liệu chưa tải hoàn thành, xin vui lòng đợi và thử lại sau`,
+      text1Style:{fontSize:13,color:'#40B59F'},
+      position: 'top',
+      topOffset: 20,
+      visibilityTime: 3000, // Toast will disappear after 3 seconds
+    });
+      return;
+  }
+  else 
+    router.push({pathname:"/Camera",params:{taskId:Data.taskId,orderId:Data.orderId,accountId:account?.id,orderCode:order.orderCode}})
+}
   return (
     <LinearGradient colors={['#40B59F', '#fff']}
     locations={[0.41, 1]} style={Style.background}>
@@ -180,8 +195,20 @@ useEffect(() => {
      
       </Animated.View> 
       <View style={styles.row}>
-      
-        </View>
+       <TouchableOpacity style={[styles.option, selectedOption === 'VNPay' && styles.selectedOption]} onPress={() => setSelectedOption('VNPay')}>
+        <Text style={[selectedOption==='VNPay' ? styles.selectedOptonsText : styles.optionText]}>VNPay</Text>
+       </TouchableOpacity>
+
+      <TouchableOpacity style={[styles.option, selectedOption === 'Momo' && styles.selectedOption]} onPress={() => setSelectedOption('Momo')}>
+      <Text style={[selectedOption==='Momo' ? styles.selectedOptonsText : styles.optionText]}>Momo</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.option, selectedOption === 'Cash' && styles.selectedOption]} onPress={() => setSelectedOption('Cash')}>
+      <Text style={[selectedOption==='Cash' ? styles.selectedOptonsText : styles.optionText]}>Tiền mặt</Text>
+      </TouchableOpacity>
+      </View>
+      {/* QRCode */}
+      {selectedOption === 'VNPay' && (
+          <>
         {url !== undefined ? (
         <Animated.View style={[styles.qrContainer, { opacity: qrFadeAnim }]}>
             <QRCode value={url} size={150}/>
@@ -191,18 +218,35 @@ useEffect(() => {
         </Animated.View>
         ):
         (  <Animated.View style={[styles.qrContainer, { opacity: qrFadeAnim }]}>
-        
         <Text style={[styles.qrText]}>
           Đang tạo mã QR
         </Text>
       </Animated.View>)
         } 
+        </>
+      )}
+        {/* Momo */}
+        {selectedOption === 'Momo' && (
+          <>
+        <Animated.View style={[styles.qrContainer, { opacity: qrFadeAnim }]}>
+        <Image source={{uri : qr}} style={{width:150,height:150}}resizeMode="contain"/>
+          <Animated.Text style={[styles.qrText, { opacity: fadeAnim2 }]}>
+            Scan to Pay
+          </Animated.Text>
+        </Animated.View>
+        </>
+      )}
+        {/* Cash */}
        <View style={Style.buttonPanel}>
        
         <Button style={[Style.btn,{marginLeft:'7%'}]} onPress={()=>router.replace("/(tabs)/Shipping")}><Text style={{fontSize:16,fontFamily:'Quicksand'}}>Quay lại</Text></Button>
+        {selectedOption === 'VNPay' && (
          <Button style={[Style.btn,{marginRight:'7%', backgroundColor:'green'}]} onPress={()=>setIsCreated(!isCreated)}><Text style={{color:'#fff',fontSize:16,fontFamily:'Quicksand'}}>Tạo lại QR</Text></Button>
-         {/* <Button style={[Style.btn,{marginRight:'7%', backgroundColor:'green'}]} onPress={()=>setIsCreated(!isCreated)}><Text style={{color:'#fff',fontSize:16,fontFamily:'Quicksand'}}>Hủy đơn hàng</Text></Button> */}
-      </View>
+        )}
+         {selectedOption !== 'VNPay' && (
+          <Button style={[Style.btn,{marginRight:'7%', backgroundColor:'green'}]} onPress={()=>navigate()}><Text style={{color:'#fff',fontSize:16,fontFamily:'Quicksand'}}>Hoàn thành</Text></Button> 
+        )}
+         </View>
       </View>
    )}
       </GestureHandlerRootView>
@@ -241,7 +285,7 @@ const Style = StyleSheet.create({
    infoPanel:{
     width:'95%',
     height:'auto',
-    marginTop:30,
+    marginTop:20,
     backgroundColor:'#fff',
     flexDirection:'column',
     alignContent:'flex-start',
@@ -320,35 +364,51 @@ const styles = StyleSheet.create({
 
     flexDirection: 'row',
 
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
 
-    width: '80%',
-    marginTop:20
-
+    width: '95%',    marginBottom:15,
+    marginTop:15,
+    
+    shadowColor: '#000',
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.9,
+    shadowRadius: 3,
+    elevation: 10,
+    borderRadius:20,
+    padding:5,
+    backgroundColor: '#fff',
   },
 
   option: {
 
     backgroundColor: '#fff',
 
-    padding: 15,
+    padding: 10,
 
     borderRadius: 10,
 
-    marginVertical: 10,
+    marginVertical: 5,
 
-    width: '40%',
+
+    width: '30%',
 
     alignItems: 'center',
-
+    borderColor: '#0068c2',
+    borderWidth:1
   },
 
   selectedOption: {
 
     borderColor: '#0068c2',
-    borderWidth:2
+    backgroundColor: '#0068C2',
 
+    borderWidth:1
   },
+  selectedOptonsText:{
+    color:'#fff',
+    fontSize: 18,
+  }
+  ,
 
   optionText: {
 

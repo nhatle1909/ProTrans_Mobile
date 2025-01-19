@@ -6,6 +6,8 @@ interface CustomListItemProps {
   lan1: string;
   lan2: string
   numberOfNotarize:string;
+  notarizationPrice:string
+
   code: string;
   onPress: () => void;
 }
@@ -14,6 +16,7 @@ export const CustomListDocumentNotarize: React.FC<CustomListItemProps> = ({
   lan1,
   lan2,
   numberOfNotarize,
+  notarizationPrice,
   code,
   onPress,
 }) => {
@@ -57,6 +60,7 @@ export const CustomListDocumentNotarize: React.FC<CustomListItemProps> = ({
           <View style={styles.valueContainer}>
               <Text style={{fontSize:13,fontFamily:"Quicksand"}}>Mã tài liệu: {code}</Text>
               <Text style={{fontSize:13,fontFamily:"Quicksand"}}>Số bản công chứng: {numberOfNotarize}</Text>
+              <Text style={{fontSize:13,fontFamily:"Quicksand"}}>Chi phí công chứng: {notarizationPrice}</Text>
             </View>
             
           <View style={styles.address}>

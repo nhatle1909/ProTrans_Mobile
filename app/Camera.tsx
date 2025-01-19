@@ -3,7 +3,7 @@ import { UploadBase64Image } from '@/Utils/FirebaseUtil';
 import { UpdateURL } from '@/Utils/ImageShippingAPI/ImageShippingAPI';
 import { PostNotification } from '@/Utils/NotificationAPI/NotificationAPI';
 import { UpdateOrder } from '@/Utils/OrderAPI/OrderAPI';
-import { SendMail } from '@/Utils/SendMailAPI/SendMailAPI';
+import { SendMail, SendMail2 } from '@/Utils/SendMailAPI/SendMailAPI';
 import { UpdateTaskStatusCompleted } from '@/Utils/ShippingAPI/ShippingAPI';
 import { DecodeToken, GetToken } from '@/Utils/TokenUtil';
 import { CreateTransaction } from '@/Utils/TransactionAPI/TransactionAPI';
@@ -32,10 +32,11 @@ export default function CameraScreen(){
 
     let TakePhoto = async () => {
      if (cameraRef.current){
-        const options = { quality: 0.5, base64: true, exif: false };
+        const options = {base64: true ,skipProcessing:true };
         const photos = await cameraRef.current.takePictureAsync(options);
 
         setPhoto({uri: photos.uri,base64:photos.base64});
+    
        
      }
     };
@@ -51,7 +52,7 @@ export default function CameraScreen(){
           { text: 'Có', onPress:async () => 
             {
              
-                
+            
               let url = "";
               setIsLoading(true);
               await UploadBase64Image(photo.uri,ImageShippingid[0].id.toString()) .then(imageUrl => {
@@ -65,10 +66,10 @@ export default function CameraScreen(){
               .catch(error => {
                 console.error('Error uploading image:', error);
               });
-               UpdateTaskStatusCompleted(Token,Data.taskId.toString());      
+               await UpdateTaskStatusCompleted(Token,Data.taskId.toString());      
                UpdateURL(Token,ImageShippingid[0].id.toString(),url)           
                PostNotification(Token,"59d9635f-3d42-4aff-992d-c84f931a5ed8",DataToken.Username,Data.orderCode.toString())
-              await SendMail(Token,Data.orderId,DataToken.Username,Data.shipperPhone,photo.base64,Data.customerEmail)
+               SendMail2(Token,Data.orderId,DataToken.Username,Data.shipperPhone,Data.customerEmail,photo.base64)
               setIsLoading(false);
               router.replace("/(tabs)/Shipping")
           }
