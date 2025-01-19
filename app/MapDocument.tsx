@@ -12,9 +12,9 @@ import  BottomSheet,{ BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import * as Location from 'expo-location';
 import { formatPrice } from '@/Utils/ValidateUtil';
 import { UpdateTaskStatusShipping } from '@/Utils/ShippingAPI/ShippingAPI';
-import { MapboxAPI } from '@/constants/API';
-import MapboxGL, { PointAnnotation } from "@rnmapbox/maps"
- MapboxGL.setAccessToken(MapboxAPI)
+// import { MapboxAPI } from '@/constants/API';
+// import MapboxGL, { PointAnnotation } from "@rnmapbox/maps"
+//  MapboxGL.setAccessToken(MapboxAPI)
 export default function Map(){
   const TokenId = GetToken();
   const snapPoints = useMemo(() => ['60%','100%'],[])
@@ -85,7 +85,7 @@ export default function Map(){
     return (
       <View style={Style.container}>  
 
-<MapboxGL.MapView style={{ flex: 1 }}>
+{/* <MapboxGL.MapView style={{ flex: 1 }}>
 <MapboxGL.Camera zoomLevel={16} centerCoordinate={[origin.longitude,origin.latitude]}/>
 <MapboxGL.PointAnnotation
         children={<></>}
@@ -108,7 +108,7 @@ export default function Map(){
               }}
             />
           </MapboxGL.ShapeSource>
-    </MapboxGL.MapView> 
+    </MapboxGL.MapView>  */}
 
 <GestureHandlerRootView style ={{   zIndex:2,
         position:'absolute',

@@ -2,6 +2,8 @@ import { GetDocument, GetDocuments2 } from "@/Utils/DocumentAPI/DocumentAPI";
 import { GetLanguage } from "@/Utils/LanguageAPI/LanguageAPI";
 import { useEffect, useState } from "react";
 import { Document } from "./DocumentModel";
+import { GetNotarizationPrice } from "@/Utils/DocumentPriceAPI/DocumentPriceAPI";
+import { formatPrice } from "@/Utils/ValidateUtil";
 
 export interface NotarizationDetail{
     id:string;
@@ -11,9 +13,10 @@ export interface NotarizationDetail{
     code: string;
     pageNumber: string;
     numberOfNotarizedCopies: number;
+    notarizationPrice:string;
 }
 export const useDocumentList2 =  (Token:string,id:string) => {
-    const [DocumentList, setDocumentList] = useState<NotarizationDetail[]>([]);
+    const [DocumentList, setDocumentList] = useState<NotarizationDetail[]>();
     useEffect(() => {
       const fetchData = async () => {
         try {
@@ -24,14 +27,16 @@ export const useDocumentList2 =  (Token:string,id:string) => {
               const Document = await GetDocument(Token,item.documentId);
               const firstLanguage = await GetLanguage(Token, Document.firstLanguageId);
               const secondLanguage = await GetLanguage(Token, Document.secondLanguageId);
-  
+              const notaPrice = await GetNotarizationPrice(Token,item.documentId);
+              const price =  formatPrice(notaPrice.notarizationFee);
               return {
                 ...item,
                 firstLanguage: firstLanguage.name,
                 secondLanguage: secondLanguage.name,
                 code: Document.code,
                 pageNumber : Document.pageNumber,
-                numberOfNotarizedCopies:Document.numberOfNotarizedCopies
+                numberOfNotarizedCopies:Document.numberOfNotarizedCopies,
+                notarizationPrice:price
               };
             })
           );

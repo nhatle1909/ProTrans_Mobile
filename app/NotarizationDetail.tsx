@@ -68,11 +68,12 @@ export default function NotarizationDetail2(){
                 lan1={item.firstLanguage}
                 lan2={item.secondLanguage}
                 numberOfNotarize={item.numberOfNotarizedCopies.toString()}
+                notarizationPrice={item.notarizationPrice}
                 onPress={()=>{}}/> 
               )}
       />
             ): (
-        <Text style={{fontFamily:'Quicksand'}}>Đang tải dữ liệu</Text> // Display loading message while data is being fetched
+        <Text style={style.title}>Đang tải dữ liệu</Text> // Display loading message while data is being fetched
       )}
           
       </SafeAreaView>
@@ -170,5 +171,12 @@ const style = StyleSheet.create({
       icon:{
         marginLeft: 15,
      
+      }
+      ,title:{
+        textAlign:'center',
+        fontSize:20,
+        fontWeight:'bold',
+        padding:5,
+        marginBottom:5
       }
 })

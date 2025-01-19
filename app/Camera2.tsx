@@ -7,6 +7,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Alert, Button, Image, StyleSheet, Text, View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
+
 export default function CameraScreen(){
     const Data = useLocalSearchParams();
     const [permission, requestPermission] = useCameraPermissions();
@@ -21,7 +22,7 @@ export default function CameraScreen(){
 
     let TakePhoto = async () => {
      if (cameraRef.current){
-        const options = { quality: 0.5, base64: true, exif: false };
+        const options = {base64: true ,skipProcessing:true};
         const photos = await cameraRef.current.takePictureAsync(options);
 
         setPhoto({uri: photos.uri,base64:photos.base64});
